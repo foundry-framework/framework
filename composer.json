@@ -1,0 +1,47 @@
+{
+    "name": "foundry-framework/framework",
+    "description": "The Foundry Framework is an implementation of the Laravel Framework with an opinionated approach using Doctrine and Services to build core API driven applications.",
+    "keywords": ["framework", "foundry"],
+    "license": "MIT",
+    "homepage": "https://www.foundryframework.com",
+    "support": {
+        "issues": "https://github.com/foundry-framework/framework/issues",
+        "source": "https://github.com/foundry-framework/framework"
+    },
+    "authors": [
+        {
+            "name": "Greg Gunner",
+            "email": "greg@co-foundry.co.za"
+        },
+        {
+            "name": "Medard Ilunga",
+            "email": "medard@co-foundry.co.za"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "laravel/framework": "5.6.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Foundry\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+    },
+    "suggest": {
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
