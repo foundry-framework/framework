@@ -1,6 +1,10 @@
 <?php
 
+namespace src\Storage;
+
+use Exception;
 use LaravelDoctrine\ORM\Facades\EntityManager as EntityManager;
+use src\Api\Entities\Entity;
 
 /**
  * Class Store
@@ -20,10 +24,10 @@ class Store
      * @param Entity $obj The object to be deleted
      * @param bool $remove Should it be soft deleted or removed completely
      *
-     * @return bool
+     * @return Entity
      * @throws Exception
      */
-    public static function delete(Entity $obj, bool $remove = false) : bool
+    public static function delete(Entity $obj, bool $remove = false) : Entity
     {
         if($remove){
             EntityManager::remove($obj);
@@ -42,7 +46,7 @@ class Store
 
         self::flush();
 
-        return true;
+        return $obj;
     }
 
     /**

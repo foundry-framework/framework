@@ -1,5 +1,7 @@
 <?php
 
+namespace src\Api\Entities;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
