@@ -62,7 +62,7 @@ abstract class Model
      *
      * @return Response
      */
-    static function store(Entity $entity, bool $validate = true){
+    static function store(Entity $entity, $validate = true){
 
         /**
          * @var $resp Response
@@ -132,7 +132,7 @@ abstract class Model
      * @param bool $force | Soft/Hard destroy
      * @return Response
      */
-    static function destroy(Entity $entity, bool $force = false){
+    static function destroy(Entity $entity, $force = false){
 
         /**
          * Has the object been successfully deleted?
