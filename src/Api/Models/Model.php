@@ -20,6 +20,13 @@ abstract class Model
 {
 
     /**
+     * Get the Entity Object of this model
+     *
+     * @return Entity
+     */
+    static abstract function entity();
+
+    /**
      * Validation rules for corresponding Entity'properties
      *
      * @return array
@@ -33,6 +40,19 @@ abstract class Model
      */
     static abstract function messages();
 
+    /**
+     * Determine if the current user is authorized to manipulate the Entity Object of this Model
+     *
+     * @param Entity|null $entity
+     *
+     * @return bool
+     */
+    static function authorized(Entity $entity = null){
+        /**
+         * Override with custom code. And should return true or false
+         */
+        return true;
+    }
 
     /**
      * Update/Create an entity and call required methods
@@ -207,5 +227,27 @@ abstract class Model
         }
 
         return $array;
+    }
+
+    /**
+     * Create an Entity Object
+     *
+     * @param array $data
+     * @return Entity
+     */
+    static function createEntity(array  $data){
+
+        $entity = self::entity();
+
+        foreach ($data as $key => $value){
+
+            $method = 'set'.camel_case($key);
+
+            if(method_exists($entity, $method)){
+                $entity->$method($value);
+            }
+        }
+
+        return $entity;
     }
 }
