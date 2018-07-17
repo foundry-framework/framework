@@ -326,11 +326,10 @@ class GenerateEntityCommand extends Command
      */
     private function createEntityClass(PhpNamespace $namespace, string  $name, string  $table, array $fields, bool $timestamps, bool $isUser) : ClassType
     {
-        $class = $namespace->addClass($name);
 
-        $class->addExtend($isUser? 'User':'Entity');
+        $class = $this->createClass($namespace,$name, $isUser? 'User':'Entity');
 
-        $class->addComment("Class ".$name.'\n')
+        $class
               ->addComment("@Mapping\\Entity")
               ->addComment('@Mapping\\Table(name="'.$table.'")');
 
