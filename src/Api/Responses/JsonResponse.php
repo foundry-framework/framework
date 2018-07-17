@@ -1,6 +1,6 @@
 <?php
 
-namespace FoundryFramework\Framework\Api\Response;
+namespace Foundry\Framework\Api\Response;
 
 
 class JsonResponse{

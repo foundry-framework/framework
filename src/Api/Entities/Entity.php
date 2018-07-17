@@ -1,6 +1,6 @@
 <?php
 
-namespace FoundryFramework\Framework\Api\Entities;
+namespace Foundry\Framework\Api\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 

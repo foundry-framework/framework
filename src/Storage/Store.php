@@ -1,10 +1,10 @@
 <?php
 
-namespace FoundryFramework\Framework\Storage;
+namespace Foundry\Framework\Storage;
 
 use Exception;
 use LaravelDoctrine\ORM\Facades\EntityManager as EntityManager;
-use FoundryFramework\Framework\Api\Entities\Entity;
+use Foundry\Framework\Api\Entities\Entity;
 
 /**
  * Class Store

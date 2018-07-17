@@ -1,6 +1,6 @@
 <?php
 
-namespace FoundryFramework\Framework\Api\Entities;
+namespace Foundry\Framework\Api\Entities;
 
 
 abstract class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable

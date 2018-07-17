@@ -1,11 +1,7 @@
 <?php
 
-namespace FoundryFramework\Framework\Console;
+namespace Foundry\Framework\Console;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\Tools\Console\MetadataFilter;
-use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
-use Doctrine\ORM\Tools\EntityGenerator;
 
 class GeneratePackageCommand extends Command
 {

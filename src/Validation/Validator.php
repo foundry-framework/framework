@@ -1,10 +1,10 @@
 <?php
 
-namespace FoundryFramework\Framework\Validation;
+namespace Foundry\Framework\Validation;
 
 use Illuminate\Support\Facades\Validator as IlluminateValidator;
-use FoundryFramework\Framework\Api\Response\JsonResponse;
-use FoundryFramework\Framework\Api\Response\Response;
+use Foundry\Framework\Api\Response\JsonResponse;
+use Foundry\Framework\Api\Response\Response;
 
 /**
  * Responsible for validating data
