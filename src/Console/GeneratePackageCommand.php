@@ -21,7 +21,8 @@ class GeneratePackageCommand extends Command
 
     public function handle()
     {
-        $name = $this->argument('name');
+
+        $name = camel_case($this->argument('name'));
         $roots = ['/src', '/config'];
         $files = ['/.gitignore','/.editorconfig','/.gitattributes','/readme.md'];
         $apiFolders = ['/Entities','/Models','/Repositories','/Services'];
@@ -33,7 +34,7 @@ class GeneratePackageCommand extends Command
 
         $path = $base.'/'.$name;
 
-        if(!$path){
+        if(!is_dir($path)){
             $this->createDirectory($path);
 
             foreach ($files as $file){
