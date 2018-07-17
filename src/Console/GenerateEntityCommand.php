@@ -89,8 +89,18 @@ class GenerateEntityCommand extends Command
              */
 
             $entity = $this->initEntityClass($package, $name, $table, $fields, $timestamps, $isUser);
-
             $this->createFile($entityFolder.'/'. $name, $entity);
+
+            $model = $this->initModelClass($package, $name.'Model');
+            $this->createFile($modelFolder.'/'.$name.'Model', $model);
+
+            $service = $this->initServiceClass($package, $name.'Service');
+            $this->createFile($servicesFolder.'/'.$name.'Service', $service);
+
+            $repo = $this->initRepoClass($package, $name.'Repository');
+            $this->createFile($repoFolder.'/'.$name.'Repository', $repo);
+
+            $this->message('Entity class and all related classes added successfully!');
 
         }else
             $this->message('Package '. $package. ' does not exist!');
@@ -120,6 +130,41 @@ class GenerateEntityCommand extends Command
 
         return $this->createEntityClass($namespace, $name, $table, $fields, $timestamps, $isUser);
 
+    }
+
+    private function initModelClass(string $package, string $name) : ClassType
+    {
+        $namespace = new PhpNamespace(ucfirst(strtolower($package)).'\\Api\\Models');
+
+        $psr4 = 'Foundry\\Framework\\Api\\Models\\Model';
+        $namespace->addUse($psr4);
+
+        $entity = ucfirst(strtolower($package)).'\\Api\\Entities\\'.$name;
+
+        return $this->createModelClass($namespace, $name, $entity);
+    }
+
+    private function initServiceClass(string $package, string $name): ClassType
+    {
+        $namespace = new PhpNamespace(ucfirst(strtolower($package)).'\\Api\\Services');
+
+        $psr4 = 'Foundry\\Framework\\Api\\Services\\Service';
+        $namespace->addUse($psr4);
+
+        $entity = ucfirst(strtolower($package)).'\\Api\\Entities\\'.$name;
+        $model = ucfirst(strtolower($package)).'\\Api\\Models\\'.$name.'Model';
+
+        return $this->createServiceClass($namespace, $name,$entity, $model);
+    }
+
+    private function initRepoClass(string $package, string $name) : ClassType
+    {
+        $namespace = new PhpNamespace(ucfirst(strtolower($package)).'\\Api\\Repositories');
+
+        $psr4 = 'Foundry\\Framework\\Api\\Repositories\\Repository';
+        $namespace->addUse($psr4);
+
+        return $this->createRepoClass($namespace, $name);
     }
 
     /**
@@ -286,8 +331,8 @@ class GenerateEntityCommand extends Command
         $class->addExtend($isUser? 'User':'Entity');
 
         $class->addComment("Class ".$name.'\n')
-            ->addComment("@Mapping\\Entity")
-            ->addComment('@Mapping\\Table(name="'.$table.'")');
+              ->addComment("@Mapping\\Entity")
+              ->addComment('@Mapping\\Table(name="'.$table.'")');
 
         if($timestamps){
             $fields = array_merge($fields, [
@@ -317,16 +362,75 @@ class GenerateEntityCommand extends Command
 
     }
 
-    private function createModelClass(){
+    private function createModelClass(PhpNamespace $namespace, string $name, string $entityClass) : ClassType
+    {
 
+        $class = $this->createClass($namespace, $name, 'Model');
+
+        $entity = new Method('entity');
+        $entity->setStatic()
+                ->setComment('Get the Entity Object')
+                ->setBody('return new '.$entityClass);
+
+        $rules = new Method('rules');
+        $rules->setStatic()
+                ->setBody('//todo add rules /n/n return []');
+
+        $messages = new Method('messages');
+        $messages->setStatic()
+            ->setBody('//todo add custom rules messages /n/n return []');
+
+
+        $class->setMethods([$entity, $rules, $messages]);
+
+        return $class;
     }
 
-    private function createRepoClass(){
+    private function createRepoClass(PhpNamespace $namespace, string $name) : ClassType
+    {
+        $class = $this->createClass($namespace, $name, 'Repository');
 
+        return $class;
     }
 
-    private function createServiceClass(){
+    private function createServiceClass(PhpNamespace $namespace, string $name, string $entityClass, string $modelClass) : ClassType
+    {
+        $class = $this->createClass($namespace, $name, 'Service');
 
+        $entity = new Method('entity');
+        $entity->setStatic()
+                ->setComment('Get the Entity Object')
+                ->setBody('return new '.$entityClass);
+
+        $model = new Method('entity');
+        $model->setStatic()
+                ->setComment('Get the Model of the Entity Object')
+                ->setBody('return new '.$modelClass);
+
+        $class->setMethods([$entity, $model]);
+
+        return $class;
+    }
+
+    /**
+     * Create a class based off of a @PhpNamespace
+     *
+     * @param PhpNamespace $namespace | namespace
+     * @param string $name | name of class
+     * @param string|null $extends | class to be extended
+     *
+     * @return ClassType
+     */
+    private function createClass(PhpNamespace $namespace, string $name, string $extends = null) : ClassType
+    {
+        $class = $namespace->addClass($name);
+
+        $class->addComment("Class ".$name.'\n');
+
+        if($extends)
+            $class->addExtend($extends);
+
+        return $class;
     }
 
     /**

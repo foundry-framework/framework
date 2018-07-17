@@ -34,7 +34,8 @@ abstract class Service {
      *
      * @param array $data | associative array
      *
-     * @return null|\src\Api\Response\Response
+     *
+     * @return \Foundry\Framework\Api\Response\Response|null
      */
     static function create(array $data){
 
@@ -62,7 +63,8 @@ abstract class Service {
      *
      * @param $data | associative array or Entity object
      *
-     * @return null|\src\Api\Response\Response
+     *
+     * @return \Foundry\Framework\Api\Response\Response|null
      */
     static function edit($data){
 
@@ -92,7 +94,8 @@ abstract class Service {
      *
      * @param $id | Id of the Entity object to be deleted
      *
-     * @return \src\Api\Response\Response
+     *
+     * @return \Foundry\Framework\Api\Response\Response
      */
     static function destroy($id){
 
