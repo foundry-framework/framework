@@ -38,6 +38,14 @@
         }
     },
     "extra": {
+        "laravel": {
+            "providers": [
+                "FoundryFramework\\Framework\\FoundryServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
     },
     "suggest": {
     },
