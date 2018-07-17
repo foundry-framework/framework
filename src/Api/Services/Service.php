@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Api\Services;
+namespace FoundryFramework\Framework\Api\Services;
 use LaravelDoctrine\ORM\Facades\EntityManager;
-use src\Api\Entities\Entity;
-use src\Api\Models\Model;
-use src\Api\Response\JsonResponse;
+use FoundryFramework\Framework\Api\Entities\Entity;
+use FoundryFramework\Framework\Api\Models\Model;
+use FoundryFramework\Framework\Api\Response\JsonResponse;
 
 /**
  * Bridge between controllers and Models that all Services MUST extend

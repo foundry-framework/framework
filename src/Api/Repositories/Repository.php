@@ -1,5 +1,6 @@
 <?php
 
+namespace FoundryFramework\Framework\Repositories;
 
 use Doctrine\ORM\EntityRepository as BaseRepository;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace src\Storage;
+namespace FoundryFramework\Framework\Storage;
 
 use Exception;
 use LaravelDoctrine\ORM\Facades\EntityManager as EntityManager;
-use src\Api\Entities\Entity;
+use FoundryFramework\Framework\Api\Entities\Entity;
 
 /**
  * Class Store
@@ -27,7 +27,7 @@ class Store
      * @return Entity
      * @throws Exception
      */
-    public static function delete(Entity $obj, bool $remove = false) : Entity
+    public static function delete(Entity $obj, $remove = false) : Entity
     {
         if($remove){
             EntityManager::remove($obj);

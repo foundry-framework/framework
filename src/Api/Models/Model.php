@@ -1,13 +1,13 @@
 <?php
 
-namespace src\Api\Models;
+namespace FoundryFramework\Framework\Api\Models;
 
 use Exception;
-use src\Api\Entities\Entity;
-use src\Api\Response\JsonResponse;
-use src\Api\Response\Response;
-use src\Storage\Store;
-use src\Validation\Validator;
+use FoundryFramework\Framework\Api\Entities\Entity;
+use FoundryFramework\Framework\Api\Response\JsonResponse;
+use FoundryFramework\Framework\Api\Response\Response;
+use FoundryFramework\Framework\Storage\Store;
+use FoundryFramework\Framework\Validation\Validator;
 
 /**
  * Class Model
