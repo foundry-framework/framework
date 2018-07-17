@@ -10,7 +10,7 @@ use Foundry\Framework\Api\Response\JsonResponse;
  * Bridge between controllers and Models that all Services MUST extend
  *
  * Class Service
- * @package src\Api\Services
+ * @package Foundry\Framework\Api\Services
  *
  * @author Medard Ilunga
  */

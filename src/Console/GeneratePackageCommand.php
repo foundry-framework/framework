@@ -2,7 +2,15 @@
 
 namespace Foundry\Framework\Console;
 
-
+/**
+ * Generate Foundry Package structure
+ *
+ * Class GeneratePackageCommand
+ *
+ * @package Foundry\Framework\Console
+ *
+ * @author Medard Ilunga
+ */
 class GeneratePackageCommand extends Command
 {
     /**

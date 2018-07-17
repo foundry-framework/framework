@@ -2,7 +2,14 @@
 
 namespace Foundry\Framework\Api\Response;
 
-
+/**
+ * Represents a Json response
+ *
+ * Class JsonResponse
+ * @package Foundry\Framework\Api\Response
+ *
+ * @author Medard Ilunga
+ */
 class JsonResponse{
 
     /**

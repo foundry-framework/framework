@@ -10,7 +10,7 @@ use Foundry\Framework\Api\Response\Response;
  * Responsible for validating data
  *
  * Class Validator
- * @package src\Validation
+ * @package @package Foundry\Framework\Validation
  *
  * @author Medard Ilunga
  */

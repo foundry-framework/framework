@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @MappedSupperClass
  *
+ * @package Foundry\Framework\Api\Entities
+ *
  * @author Medard Ilunga
  */
 abstract class Entity

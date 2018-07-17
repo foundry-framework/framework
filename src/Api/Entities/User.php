@@ -2,7 +2,13 @@
 
 namespace Foundry\Framework\Api\Entities;
 
-
+/**
+ * Class User
+ *
+ * @package Foundry\Framework\Api\Entities
+ *
+ * @author Medard Ilunga
+ */
 abstract class User extends Entity implements \Illuminate\Contracts\Auth\Authenticatable
 {
 

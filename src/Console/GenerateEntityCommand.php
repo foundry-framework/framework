@@ -7,6 +7,15 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 
+/**
+ * Class GenerateEntityCommand
+ * Generates Entity, Model, Service, and Repo classes
+ *
+ *
+ * @package Foundry\Framework\Console
+ *
+ * @author Medard Ilunga
+ */
 class GenerateEntityCommand extends Command
 {
 

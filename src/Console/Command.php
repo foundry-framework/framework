@@ -4,6 +4,12 @@ namespace Foundry\Framework\Console;
 
 use Illuminate\Console\Command as IlluminateCommand;
 
+/**
+ * Class Command
+ * @package Foundry\Framework\Console
+ *
+ * @author Medard Ilunga
+ */
 class Command extends IlluminateCommand
 {
     /**

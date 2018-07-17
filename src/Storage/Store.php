@@ -12,6 +12,7 @@ use Foundry\Framework\Api\Entities\Entity;
  * This class is responsible for interacting with Doctrine @EntityManager
  * In order to Create, Update, Delete or Restore data
  *
+ * @package Foundry\Framework\Storage
  *
  * @author Medard Ilunga
  */

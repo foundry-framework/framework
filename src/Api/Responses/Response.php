@@ -2,7 +2,12 @@
 
 namespace Foundry\Framework\Api\Response;
 
-
+/**
+ * Class Response
+ * @package Foundry\Framework\Api\Response
+ *
+ * @author Medard Ilunga
+ */
 class Response{
 
     /**

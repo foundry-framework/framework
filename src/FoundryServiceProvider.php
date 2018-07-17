@@ -5,7 +5,12 @@ namespace Foundry\Framework;
 use Foundry\Framework\Console\GeneratePackageCommand;
 use Illuminate\Support\ServiceProvider;
 
-
+/**
+ * Class FoundryServiceProvider
+ * @package Foundry\Framework
+ *
+ * @author Medard Ilunga
+ */
 class FoundryServiceProvider extends ServiceProvider
 {
     /**

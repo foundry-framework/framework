@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityRepository as BaseRepository;
  *
  * Base repository that all repositories MUST extend
  *
+ * @package Foundry\Framework\Repositories
+ *
  * @author Medard Ilunga
  */
 class Repository extends BaseRepository

@@ -14,6 +14,8 @@ use Foundry\Framework\Validation\Validator;
  *
  * Base class that all models MUST extend
  *
+ * @package Foundry\Framework\Api\Models
+ *
  * @author Medard Ilunga
  */
 abstract class Model
@@ -27,7 +29,7 @@ abstract class Model
     static abstract function entity();
 
     /**
-     * Validation rules for corresponding Entity'properties
+     * Validation rules for corresponding Entity's properties
      *
      * @return array
      */
