@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author Medard Ilunga
  */
-class Entity
+abstract class Entity
 {
     /**
      * @var $id: Primary key
