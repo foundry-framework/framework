@@ -20,13 +20,13 @@ abstract class Service {
      * Get the Model of the Entity Object
      * @return Model
      */
-    static abstract function getEntityModel();
+    static abstract function entityModel();
 
     /**
      * Get the Entity
      * @return Model
      */
-    static abstract function getEntity();
+    static abstract function entity();
 
 
     /**
@@ -39,7 +39,7 @@ abstract class Service {
      */
     static function create(array $data){
 
-        $model = self::getEntityModel();
+        $model = self::entityModel();
         $resp = null;
 
         if($model::authorized()){
@@ -68,7 +68,7 @@ abstract class Service {
      */
     static function edit($data){
 
-        $model = self::getEntityModel();
+        $model = self::entityModel();
         $resp = null;
 
         $entity = $data;
@@ -99,9 +99,9 @@ abstract class Service {
      */
     static function destroy($id){
 
-        $entity = EntityManager::find(self::getEntity(), $id);
+        $entity = EntityManager::find(self::entity(), $id);
 
-        $model = self::getEntityModel();
+        $model = self::entityModel();
 
         if($entity){
 
@@ -118,7 +118,7 @@ abstract class Service {
                 return JsonResponse::external(null, 'Access denied', 403);
 
         }else
-            return JsonResponse::external(null, get_class(self::getEntity()).' Not found', 404);
+            return JsonResponse::external(null, get_class(self::entity()).' Not found', 404);
     }
 
     static function restore($id){

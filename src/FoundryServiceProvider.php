@@ -2,6 +2,7 @@
 
 namespace Foundry\Framework;
 
+use Foundry\Framework\Console\GenerateEntityCommand;
 use Foundry\Framework\Console\GeneratePackageCommand;
 use Illuminate\Support\ServiceProvider;
 
@@ -59,6 +60,7 @@ class FoundryServiceProvider extends ServiceProvider
     {
         $this->commands([
             GeneratePackageCommand::class,
+            GenerateEntityCommand::class
         ]);
     }
 

@@ -24,35 +24,34 @@ class GenerateEntityCommand extends Command
      * @var string
      */
     protected $signature = 'foundry:generate:entity
-    {package: The package for which this entity is for}
+    {package : The package for which this entity is for}
     {name : The name of the entity }
-    {--properties= : Comma separated properties of the entity with their respective types and optional required or not.
-                    the structure is nameOfColumn:Type:required (e.g: name:string, last_name:string:false, count:int, ... )
-                    By default all columns are considered string and required }
-    {--user: Should this entity extend the User Class? }
-    {--table=: The name of the database table related to this entity, only if name is different to entity name}';
+    {--properties= : Comma separated properties of the entity with their respective types and optional required or not. the structure is nameOfColumn:Type:required (e.g: name:string, last_name:string:false, count:int, ... ). By default all columns are considered string and required }
+    {--user : Should this entity extend the User Class? }
+    {--table= : The name of the database table related to this entity, only if name is different to entity name}';
 
     /**
      * The console command description.
      * @var string
      */
-    protected $description = 'Generates a foundry package structure';
+    protected $description = 'Generates an Entity and all related files (Model, Service, Repository)';
 
 
     public function handle()
     {
-        $timestamps = $this->confirm("Does the Entity require timestamps (deleted_at, created_at, updated_at)[Y/N]? ");
+        $timestamps = $this->confirm("Does the Entity require timestamps (created_at, updated_at)? ");
+        $deleted = $this->confirm("Can the object be soft deleted?");
 
         $package = $this->argument('package');
         $isUser = $this->option('user');
         $table = $this->option('table')?
-                                    strtolower(preg_replace('/\s+/\-/','_', $this->option('table'))):
-                                    strtolower(preg_replace('/\s+/\-/','_', $this->argument('name')));
+                                    strtolower(preg_replace('/\s+[-]/','_', $this->option('table'))):
+                                    strtolower(preg_replace('/\s+[-]/','_', $this->argument('name')));
 
         $name = ucfirst(camel_case($this->argument('name')));
-        $fields = $this->getFields($this->option('properties'));
+        $fields = $this->getFields($this->option('properties')?$this->option('properties'):'');
 
-        $root = base_path('packages/foundry'.camel_case($package));
+        $root = base_path('packages/foundry/'.camel_case($package));
 
         if(is_dir($root)){
 
@@ -88,22 +87,22 @@ class GenerateEntityCommand extends Command
              * Create classes
              */
 
-            $entity = $this->initEntityClass($package, $name, $table, $fields, $timestamps, $isUser);
+            $entity = $this->initEntityClass($package, $name, $table, $fields, $timestamps, $deleted, $isUser);
             $this->createFile($entityFolder.'/'. $name, $entity);
 
-            $model = $this->initModelClass($package, $name.'Model');
+            $model = $this->initModelClass($package, $name);
             $this->createFile($modelFolder.'/'.$name.'Model', $model);
 
-            $service = $this->initServiceClass($package, $name.'Service');
+            $service = $this->initServiceClass($package, $name);
             $this->createFile($servicesFolder.'/'.$name.'Service', $service);
 
-            $repo = $this->initRepoClass($package, $name.'Repository');
+            $repo = $this->initRepoClass($package, $name);
             $this->createFile($repoFolder.'/'.$name.'Repository', $repo);
 
             $this->message('Entity class and all related classes added successfully!');
 
         }else
-            $this->message('Package '. $package. ' does not exist!');
+            $this->message('Package '. $package. ' does not exist!', 'red');
 
     }
 
@@ -115,38 +114,39 @@ class GenerateEntityCommand extends Command
      * @param string $table | Database name of the table related to this entity
      * @param array $fields | Associative array of Entity properties
      * @param bool $timestamps | Should this entity have timestamps
+     * @param bool $deletable | Can the object be deleted?
      * @param bool $isUser | Should this entity extend the User abstract class
      *
-     * @return ClassType
+     * @return PhpNamespace
      */
-    private function initEntityClass(string $package, string $name, string $table, array $fields, bool $timestamps, bool $isUser) : ClassType
+    private function initEntityClass(string $package, string $name, string $table, array $fields, bool $timestamps, bool $deletable, bool $isUser) : PhpNamespace
     {
-        $namespace = new PhpNamespace(ucfirst(strtolower($package)).'\\Api\\Entities');
+        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Entities');
 
         $psr4 = $isUser? 'Foundry\\Framework\\Api\\Entities\\User': 'Foundry\\Framework\\Api\\Entities\\Entity';
         $namespace->addUse($psr4);
 
         $namespace->addUse('Doctrine\\ORM\\Mapping');
 
-        return $this->createEntityClass($namespace, $name, $table, $fields, $timestamps, $isUser);
+        return $this->createEntityClass($namespace, $name, $table, $fields, $timestamps, $deletable, $psr4);
 
     }
 
-    private function initModelClass(string $package, string $name) : ClassType
+    private function initModelClass(string $package, string $name) : PhpNamespace
     {
-        $namespace = new PhpNamespace(ucfirst(strtolower($package)).'\\Api\\Models');
+        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Models');
 
         $psr4 = 'Foundry\\Framework\\Api\\Models\\Model';
         $namespace->addUse($psr4);
 
-        $entity = ucfirst(strtolower($package)).'\\Api\\Entities\\'.$name;
+        $entity = camel_case(strtolower($package)).'\\Api\\Entities\\'.$name;
 
-        return $this->createModelClass($namespace, $name, $entity);
+        return $this->createModelClass($namespace, $name, $entity, $psr4);
     }
 
-    private function initServiceClass(string $package, string $name): ClassType
+    private function initServiceClass(string $package, string $name): PhpNamespace
     {
-        $namespace = new PhpNamespace(ucfirst(strtolower($package)).'\\Api\\Services');
+        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Services');
 
         $psr4 = 'Foundry\\Framework\\Api\\Services\\Service';
         $namespace->addUse($psr4);
@@ -154,17 +154,17 @@ class GenerateEntityCommand extends Command
         $entity = ucfirst(strtolower($package)).'\\Api\\Entities\\'.$name;
         $model = ucfirst(strtolower($package)).'\\Api\\Models\\'.$name.'Model';
 
-        return $this->createServiceClass($namespace, $name,$entity, $model);
+        return $this->createServiceClass($namespace, $name,$entity, $model, $psr4);
     }
 
-    private function initRepoClass(string $package, string $name) : ClassType
+    private function initRepoClass(string $package, string $name) : PhpNamespace
     {
-        $namespace = new PhpNamespace(ucfirst(strtolower($package)).'\\Api\\Repositories');
+        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Repositories');
 
         $psr4 = 'Foundry\\Framework\\Api\\Repositories\\Repository';
         $namespace->addUse($psr4);
 
-        return $this->createRepoClass($namespace, $name);
+        return $this->createRepoClass($namespace, $name, $psr4);
     }
 
     /**
@@ -177,13 +177,23 @@ class GenerateEntityCommand extends Command
      */
     private function createFile($path, $content) : void
     {
-        $file = fopen($path, 'w');
-        fwrite($file, $content);
-        fclose($file);
+        $create = true;
+
+        if(file_exists($path.'.php')){
+            $pos = strripos($path.'.php','/');
+            $create = $this->confirm(substr($path.'.php', $pos + 1 ).' class already exists and will be overwritten, do you want to proceed?');
+        }
+
+        if($create){
+            $file = fopen($path.'.php', 'w');
+            fwrite($file, '<?php'.$this->newLine(2));
+            fwrite($file, $content);
+            fclose($file);
+        }
     }
 
     /**
-     * Create Directory
+     * Create a Directory
      *
      * @param $path | path to the directory
      *
@@ -217,21 +227,21 @@ class GenerateEntityCommand extends Command
 
                     $field = explode(':', $field);
 
-                    if(in_array($field[1], $this->getDBTypes()))
-                        $type = $field[1];
+                    if(in_array(trim($field[1]), $this->getDBTypes()))
+                        $type = trim($field[1]);
 
                     if(isset($field[2]))
-                        $required = $field[2];
+                        $required = trim($field[2]) === 'false'? false: true;
 
-                    $field = $field[0];
+                    $field = trim($field[0]);
                 }
 
-                $field = preg_replace('/\s+/\-/','_', $field);
+                $field = preg_replace('/\s+[-]/','_', $field);
 
                 array_push($properties, [
                     'name' => $field,
                     'type' => $type,
-                    'required' => $required
+                    'required' => (bool) $required
                 ]);
             }
 
@@ -251,54 +261,82 @@ class GenerateEntityCommand extends Command
      */
     private function addProperty(ClassType $class, array  $property, $visibility = 'private') : ClassType
     {
-        $column = '@Mapping\\column(type="'.$property['type'].'") \n';
+        $column = '@Mapping\\column(type="'.$property['type'].'")'.$this->newLine(1);
 
-        if($property['required']){
-            $column = '@Mapping\\column(type="'.$property['type'].'", nullable=true) \n';
+        if(!$property['required']){
+            $column = '@Mapping\\column(type="'.$property['type'].'", nullable=true)'.$this->newLine(1);
         }
 
         $name = strtolower($property['name']);
 
         $class->addProperty($name)
                 ->setVisibility($visibility)
-                ->addComment('@var '.$property['type'])
+                ->addComment('@var '.$this->returnType($property['type']).$this->newLine(1))
                 ->addComment($column);
-
-        $class = $this->addMethod($class, $name, $property['type']);
 
         return $class;
     }
 
     /**
+     * Add new line
+     *
+     * @param $l | number of lines
+     *
+     * @return string
+     */
+    private function newLine($l = 1) : string
+    {
+        $end = '';
+
+        for ($i = 0; $i < $l; $i++){
+            $end .= PHP_EOL;
+        }
+
+        return $end;
+    }
+
+    /**
      * Add a class method
      *
-     * @param ClassType $class | Class object
      * @param string $column | Name of column whose methods need to be added
      * @param string $type_hint | type of column
      *
-     * @return ClassType
+     * @return array
      */
-    private function addMethod(ClassType $class, string $column, string $type_hint) : ClassType
+    private function addMethod(string $column, string $type_hint) : array
     {
         $types = ['get', 'set'];
+
+        if($type_hint === 'boolean')
+            $types = ['is', 'set'];
 
         $methods = [];
 
         foreach ($types as $type){
-            $method = new Method($type.camel_case($column));
+
+            $name = $type.ucfirst(camel_case($column));
+
+            if($type_hint === 'boolean' &&
+                strcmp(substr($column, 0,2), 'is') === 0){
+                $name = $type.ucfirst(camel_case(substr($column, 2)));
+            }
+
+
+            $method = new Method($name);
             $method->setVisibility('public');
 
             switch ($type){
 
                 case 'get':
-                    $method->addComment('@return '.$type_hint)
-                            ->setBody('return $this->'.$column);
+                case 'is':
+                    $method->addComment('@return '.$this->returnType($type_hint))
+                            ->addBody('return $this->'.$column.';');
                     break;
                 case 'set':
-                    $method->addComment('@param '.$type_hint.' $'.$column)
-                            ->addBody('$this->'.$column. ' = '. $column)
+                    $method->addComment('@param '.$this->returnType($type_hint).' $'.$column)
+                            ->addBody('$this->'.$column. ' = $'. $column.';')
                             ->addParameter($column)
-                            ->setTypeHint($type_hint);
+                            ->setTypeHint($this->returnType($type_hint, false));
                             ;
                     break;
             }
@@ -307,9 +345,7 @@ class GenerateEntityCommand extends Command
 
         }
 
-        $class->setMethods($methods);
-
-        return $class;
+        return $methods;
     }
 
     /**
@@ -320,95 +356,134 @@ class GenerateEntityCommand extends Command
      * @param string $table | database table name
      * @param array $fields | array of class properties
      * @param bool $timestamps | if the class needs timestamps
-     * @param bool $isUser | if should extend User rather than Entity abstract class
+     * @param bool $deletable
+     * @param string $extend | class to be extended
      *
-     * @return ClassType
+     * @return PhpNamespace
      */
-    private function createEntityClass(PhpNamespace $namespace, string  $name, string  $table, array $fields, bool $timestamps, bool $isUser) : ClassType
+    private function createEntityClass(PhpNamespace $namespace, string  $name, string  $table,
+                                       array $fields, bool $timestamps, bool $deletable, string $extend) : PhpNamespace
     {
 
-        $class = $this->createClass($namespace,$name, $isUser? 'User':'Entity');
+        $class = $this->createClass($namespace,$name, $extend);
 
         $class
               ->addComment("@Mapping\\Entity")
               ->addComment('@Mapping\\Table(name="'.$table.'")');
 
+
         if($timestamps){
-            $fields = array_merge($fields, [
-                array(
-                    'name' => 'created_at',
-                    'type' => 'datetime',
-                    'required' => true,
-                ),
-                array(
-                    'name' => 'updated_at',
-                    'type' => 'datetime',
-                    'required' => false,
-                ),
-                array(
-                    'name' => 'deleted_at',
-                    'type' => 'datetime',
-                    'required' => false,
-                )
-            ]);
+            $class->addTrait('Foundry\Framework\TimeStamp');
+            $namespace->addUse('Foundry\Framework\TimeStamp');
         }
+
+
+        if($deletable){
+            $class->addTrait('Foundry\Framework\Deletable');
+            $namespace->addUse('Foundry\Framework\Deletable');
+        }
+
+        $methods = [];
 
         foreach ($fields as $column){
             $class = $this->addProperty($class, $column);
+            $methods = array_merge($methods, $this->addMethod($column['name'], $column['type']));
         }
 
-        return $class;
+        $class->setMethods($methods);
+
+        return $namespace;
 
     }
 
-    private function createModelClass(PhpNamespace $namespace, string $name, string $entityClass) : ClassType
+    /**
+     * @param PhpNamespace $namespace
+     * @param string $name | name of the Entity class
+     * @param string $entityClass | Full PSR4 namespace to the entity class
+     * @param string $extend | Full PSR4 namespace of the class to be extended
+     *
+     * @return PhpNamespace
+     */
+    private function createModelClass(PhpNamespace $namespace, string $name, string $entityClass, string $extend) : PhpNamespace
     {
 
-        $class = $this->createClass($namespace, $name, 'Model');
+        $class = $this->createClass($namespace, $name.'Model', $extend);
 
+        //add required abstract methods 'entity' and 'rules' and 'messages'
+
+        $namespace->addUse($entityClass);
         $entity = new Method('entity');
         $entity->setStatic()
-                ->setComment('Get the Entity Object')
-                ->setBody('return new '.$entityClass);
+                ->addComment('Get the Entity Object represented by this Model'.$this->newLine())
+                ->addComment('@return '.ucfirst(camel_case($name)))
+                ->setBody('return new '.ucfirst(camel_case($name)).'();');
 
         $rules = new Method('rules');
         $rules->setStatic()
-                ->setBody('//todo add rules /n/n return []');
+                ->addComment('Get rules related to the Entity\'s properties'.$this->newLine())
+                ->addComment('@return array')
+                ->setBody('//todo add rules '.$this->newLine(2).' return [];');
 
         $messages = new Method('messages');
         $messages->setStatic()
-            ->setBody('//todo add custom rules messages /n/n return []');
+                ->addComment('Get customer error messages related to the rules'.$this->newLine())
+                ->addComment('@return array')
+                ->setBody('//todo add custom rules messages'.$this->newLine(2).'return [];');
 
 
         $class->setMethods([$entity, $rules, $messages]);
 
-        return $class;
+        return $namespace;
     }
 
-    private function createRepoClass(PhpNamespace $namespace, string $name) : ClassType
+    /**
+     * @param PhpNamespace $namespace | namespace
+     * @param string $name | name of the Entity class
+     * @param string $extend | Full PSR4 namespace of the class to be extended
+     *
+     * @return PhpNamespace
+     */
+    private function createRepoClass(PhpNamespace $namespace, string $name, string $extend) : PhpNamespace
     {
-        $class = $this->createClass($namespace, $name, 'Repository');
+        $class = $this->createClass($namespace, $name.'Repository', $extend);
 
-        return $class;
+        return $namespace;
     }
 
-    private function createServiceClass(PhpNamespace $namespace, string $name, string $entityClass, string $modelClass) : ClassType
+    /**
+     * Create a service class
+     *
+     * @param PhpNamespace $namespace | namespace
+     * @param string $name | name of the Entity class
+     * @param string $entityClass | Full PSR4 namespace to the entity class
+     * @param string $modelClass | Full PSR4 namespace to the model class
+     * @param string $extend | Full PSR4 namespace of the class to be extended
+     *
+     * @return PhpNamespace
+     */
+    private function createServiceClass(PhpNamespace $namespace, string $name, string $entityClass, string $modelClass, string $extend) : PhpNamespace
     {
-        $class = $this->createClass($namespace, $name, 'Service');
+        $class = $this->createClass($namespace, $name.'Service', $extend);
 
+        //add required abstract methods 'entity' and 'entityModel'
+
+        $namespace->addUse($entityClass);
         $entity = new Method('entity');
         $entity->setStatic()
-                ->setComment('Get the Entity Object')
-                ->setBody('return new '.$entityClass);
+                ->addComment('Get the Entity Object'.$this->newLine())
+                ->addComment('@return '.ucfirst(camel_case($name)))
+                ->setBody('return new '.ucfirst(camel_case($name)).'();');
 
-        $model = new Method('entity');
+        $namespace->addUse($modelClass);
+        $model = new Method('entityModel');
         $model->setStatic()
-                ->setComment('Get the Model of the Entity Object')
-                ->setBody('return new '.$modelClass);
+                ->addComment('Get the Model of the Entity Object'.$this->newLine())
+                ->addComment('@return '.ucfirst(camel_case($name)).'Model')
+                ->setBody('return new '.ucfirst(camel_case($name)).'Model();');
 
         $class->setMethods([$entity, $model]);
 
-        return $class;
+        return $namespace;
     }
 
     /**
@@ -424,12 +499,44 @@ class GenerateEntityCommand extends Command
     {
         $class = $namespace->addClass($name);
 
-        $class->addComment("Class ".$name.'\n');
+        $class->addComment("Class ".$name.$this->newLine(2));
 
         if($extends)
             $class->addExtend($extends);
 
         return $class;
+    }
+
+    /**
+     * @param $type
+     *
+     * @param bool $escape
+     * @return string
+     */
+    private function returnType($type, $escape = true){
+        $arr = ['text',
+                'bigint',
+                'smallint',
+                'decimal',
+                'text',
+                'guid',
+                'binary',
+                'blob',
+                'date',
+                'datetimetz',
+                'time',
+                'json_array',
+                'object',
+                'integer'];
+
+        if(in_array($type, $arr))
+            return $escape? '\mixed': '';
+        elseif ($type === 'array')
+            return 'array';
+        elseif ($type === 'boolean')
+            return 'bool';
+
+        return $escape? '\\'.$type: $type;
     }
 
     /**
