@@ -3,13 +3,14 @@
 namespace Foundry\Framework\Api\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use  Doctrine\ORM\Mapping\MappedSuperclass;
 
 /**
  * Class Entity
  *
  * Base class that all entities MUST extend
  *
- * @MappedSupperClass
+ * @MappedSuperclass
  *
  * @package Foundry\Framework\Api\Entities
  *
