@@ -3,6 +3,7 @@
 namespace Foundry\Framework\Storage;
 
 use Exception;
+use Foundry\Framework\APIException;
 use LaravelDoctrine\ORM\Facades\EntityManager as EntityManager;
 use Foundry\Framework\Api\Entities\Entity;
 
@@ -41,7 +42,7 @@ class Store
 
                 EntityManager::merge($obj);
             }else{
-                throw new Exception(get_class($obj).' doesn\'t have deleted_at property in order to be soft deleted');
+                throw new Exception(get_class($obj).' '.APIException::DELETED_AT_REQ);
             }
         }
 
@@ -70,7 +71,7 @@ class Store
                 EntityManager::merge($obj);
 
             }else{
-                throw new Exception(get_class($obj).' doesn\'t have deleted_at property in order to be restored');
+                throw new Exception(get_class($obj).' '.APIException::DELETED_AT_REQ);
             }
 
         }
