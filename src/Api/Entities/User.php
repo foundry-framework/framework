@@ -15,6 +15,30 @@ abstract class User extends Entity implements \Illuminate\Contracts\Auth\Authent
     use \LaravelDoctrine\ORM\Auth\Authenticatable;
 
     /**
+     * @var \string
+     *
+     * @Mapping\column(type="string")
+     */
+    protected $email;
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+
+    /**
      * @return string
      */
     public function getAuthIdentifierName()
@@ -38,7 +62,5 @@ abstract class User extends Entity implements \Illuminate\Contracts\Auth\Authent
         return $this->password;
     }
 
-    public function beforeCreate(){
 
-    }
 }

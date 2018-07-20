@@ -2,6 +2,8 @@
 
 namespace Foundry\Framework;
 
+use DateTime;
+
 /**
  * Trait DeletedTrait
  *
@@ -32,5 +34,21 @@ trait Deletable{
     public function setDeletedAt(\datetime $deleted_at)
     {
         $this->deleted_at = $deleted_at;
+    }
+
+    /**
+     * Restore the soft-deleted state
+     */
+    public function restore()
+    {
+        $this->deleted_at = null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->deleted_at && new DateTime('now') >= $this->deleted_at;
     }
 }

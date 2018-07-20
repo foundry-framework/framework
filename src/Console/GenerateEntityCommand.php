@@ -124,7 +124,8 @@ class GenerateEntityCommand extends Command
         $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Entities');
 
         $psr4 = $isUser? 'Foundry\\Framework\\Api\\Entities\\User': 'Foundry\\Framework\\Api\\Entities\\Entity';
-        $namespace->addUse($psr4);
+        $alias = $isUser? 'BaseUser': 'BaseEntity';
+        $namespace->addUse($psr4, $alias);
 
         $namespace->addUse('Doctrine\\ORM\\Mapping');
 
@@ -379,8 +380,12 @@ class GenerateEntityCommand extends Command
 
 
         if($deletable){
+
             $class->addTrait('Foundry\Framework\Deletable');
+            $class->addComment('@Gedmo\SoftDeleteable(fieldName="deleted_at", timeAware=false)'.$this->newLine());
+
             $namespace->addUse('Foundry\Framework\Deletable');
+            $namespace->addUse('Gedmo\Mapping\Annotation', 'Gedmo');
         }
 
         $methods = [];
