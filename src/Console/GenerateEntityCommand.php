@@ -127,7 +127,7 @@ class GenerateEntityCommand extends Command
         $alias = $isUser? 'BaseUser': 'BaseEntity';
         $namespace->addUse($psr4, $alias);
 
-        $namespace->addUse('Doctrine\\ORM\\Mapping');
+        $namespace->addUse('Doctrine\\ORM\\Mapping', 'ORM');
 
         return $this->createEntityClass($namespace, $name, $table, $fields, $timestamps, $deletable, $psr4);
 
@@ -262,10 +262,10 @@ class GenerateEntityCommand extends Command
      */
     private function addProperty(ClassType $class, array  $property, $visibility = 'private') : ClassType
     {
-        $column = '@Mapping\\column(type="'.$property['type'].'")'.$this->newLine(1);
+        $column = '@ORM\\column(type="'.$property['type'].'")'.$this->newLine(1);
 
         if(!$property['required']){
-            $column = '@Mapping\\column(type="'.$property['type'].'", nullable=true)'.$this->newLine(1);
+            $column = '@ORM\\column(type="'.$property['type'].'", nullable=true)'.$this->newLine(1);
         }
 
         $name = strtolower($property['name']);
@@ -369,8 +369,8 @@ class GenerateEntityCommand extends Command
         $class = $this->createClass($namespace,$name, $extend);
 
         $class
-              ->addComment("@Mapping\\Entity")
-              ->addComment('@Mapping\\Table(name="'.$table.'")');
+              ->addComment("@ORM\\Entity")
+              ->addComment('@ORM\\Table(name="'.$table.'")');
 
 
         if($timestamps){

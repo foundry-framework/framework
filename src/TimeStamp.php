@@ -13,14 +13,14 @@ trait TimeStamp{
     /**
      * @var \datetime
      *
-     * @Mapping\column(type="datetime")
+     * @ORM\column(type="datetime")
      */
     private $created_at;
 
     /**
      * @var \datetime
      *
-     * @Mapping\column(type="datetime", nullable=true)
+     * @ORM\column(type="datetime", nullable=true)
      */
     private $updated_at;
 

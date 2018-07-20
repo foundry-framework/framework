@@ -12,10 +12,11 @@ use DateTime;
  * @author Medard Ilunga
  */
 trait Deletable{
+
     /**
      * @var \datetime
      *
-     * @Mapping\column(type="datetime", nullable=true)
+     * @ORM\column(type="datetime", nullable=true)
      */
     private $deleted_at;
 

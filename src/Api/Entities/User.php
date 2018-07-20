@@ -2,6 +2,8 @@
 
 namespace Foundry\Framework\Api\Entities;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Class User
  *
@@ -17,7 +19,7 @@ abstract class User extends Entity implements \Illuminate\Contracts\Auth\Authent
     /**
      * @var \string
      *
-     * @Mapping\column(type="string")
+     * @ORM\column(type="string")
      */
     protected $email;
 
