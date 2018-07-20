@@ -26,7 +26,7 @@ class GenerateEntityCommand extends Command
     protected $signature = 'foundry:generate:entity
     {package : The package for which this entity is for}
     {name : The name of the entity }
-    {--properties= : Comma separated properties of the entity with their respective types and optional required or not. the structure is nameOfColumn:Type:required (e.g: name:string, last_name:string:false, count:int, ... ). By default all columns are considered string and required }
+    {--properties= : Comma separated properties of the entity with their respective types and optional required or not. the structure is nameOfColumn:Type:required (e.g: name, last_name:string:false, count:int, ... ). By default all columns are considered string and required }
     {--user : Should this entity extend the User Class? }
     {--table= : The name of the database table related to this entity, only if name is different to entity name}';
 
