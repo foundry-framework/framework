@@ -1,6 +1,7 @@
 <?php
 
 namespace Foundry\Framework\Api\Services;
+use Foundry\Framework\APIException;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 use Foundry\Framework\Api\Entities\Entity;
 use Foundry\Framework\Api\Models\Model;
@@ -37,7 +38,7 @@ abstract class Service {
      *
      * @return \Foundry\Framework\Api\Response\Response|null
      */
-    static function create(array $data){
+    static function post(array $data){
 
         $model = self::entityModel();
         $resp = null;
@@ -54,7 +55,15 @@ abstract class Service {
 
             return $resp;
         }else
-            return JsonResponse::external(null, 'Access denied', 403);
+            return JsonResponse::external(null, APIException::ACCESS_DENIED, 403);
+
+    }
+
+    /**
+     * Get specific records
+     *
+     */
+    static function get(){
 
     }
 
@@ -66,7 +75,7 @@ abstract class Service {
      *
      * @return \Foundry\Framework\Api\Response\Response|null
      */
-    static function edit($data){
+    static function update($data){
 
         $model = self::entityModel();
         $resp = null;
@@ -86,7 +95,7 @@ abstract class Service {
 
             return $resp;
         }else
-            return JsonResponse::external(null, 'Access denied', 403);
+            return JsonResponse::external(null, APIException::ACCESS_DENIED, 403);
     }
 
     /**
@@ -97,7 +106,7 @@ abstract class Service {
      *
      * @return \Foundry\Framework\Api\Response\Response
      */
-    static function destroy($id){
+    static function delete($id){
 
         $entity = EntityManager::find(self::entity(), $id);
 
@@ -115,10 +124,10 @@ abstract class Service {
 
                 return $resp;
             }else
-                return JsonResponse::external(null, 'Access denied', 403);
+                return JsonResponse::external(null, APIException::ACCESS_DENIED, 403);
 
         }else
-            return JsonResponse::external(null, get_class(self::entity()).' Not found', 404);
+            return JsonResponse::external(null, APIException::NO_FOUND, 404);
     }
 
     static function restore($id){

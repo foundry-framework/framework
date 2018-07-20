@@ -51,7 +51,7 @@ class GenerateEntityCommand extends Command
         $name = ucfirst(camel_case($this->argument('name')));
         $fields = $this->getFields($this->option('properties')?$this->option('properties'):'');
 
-        $root = base_path('packages/foundry/'.camel_case($package));
+        $root = base_path('packages/foundry/'.camel_case(strtolower($package)));
 
         if(is_dir($root)){
 
@@ -60,6 +60,7 @@ class GenerateEntityCommand extends Command
              */
 
             $dir = $root.'/src/Api';
+            $package = 'foundry/'.camel_case(strtolower($package));
 
             if(!is_dir($dir))
                 $this->message('The src/Api folder was not found in '. $package. ' package');
@@ -121,7 +122,7 @@ class GenerateEntityCommand extends Command
      */
     private function initEntityClass(string $package, string $name, string $table, array $fields, bool $timestamps, bool $deletable, bool $isUser) : PhpNamespace
     {
-        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Entities');
+        $namespace = new PhpNamespace($package.'\\Api\\Entities');
 
         $psr4 = $isUser? 'Foundry\\Framework\\Api\\Entities\\User': 'Foundry\\Framework\\Api\\Entities\\Entity';
         $alias = $isUser? 'BaseUser': 'BaseEntity';
@@ -135,32 +136,32 @@ class GenerateEntityCommand extends Command
 
     private function initModelClass(string $package, string $name) : PhpNamespace
     {
-        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Models');
+        $namespace = new PhpNamespace($package.'\\Api\\Models');
 
         $psr4 = 'Foundry\\Framework\\Api\\Models\\Model';
         $namespace->addUse($psr4);
 
-        $entity = camel_case(strtolower($package)).'\\Api\\Entities\\'.$name;
+        $entity = $package.'\\Api\\Entities\\'.$name;
 
         return $this->createModelClass($namespace, $name, $entity, $psr4);
     }
 
     private function initServiceClass(string $package, string $name): PhpNamespace
     {
-        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Services');
+        $namespace = new PhpNamespace($package.'\\Api\\Services');
 
         $psr4 = 'Foundry\\Framework\\Api\\Services\\Service';
         $namespace->addUse($psr4);
 
-        $entity = ucfirst(strtolower($package)).'\\Api\\Entities\\'.$name;
-        $model = ucfirst(strtolower($package)).'\\Api\\Models\\'.$name.'Model';
+        $entity = $package.'\\Api\\Entities\\'.$name;
+        $model = $package.'\\Api\\Models\\'.$name.'Model';
 
         return $this->createServiceClass($namespace, $name,$entity, $model, $psr4);
     }
 
     private function initRepoClass(string $package, string $name) : PhpNamespace
     {
-        $namespace = new PhpNamespace(camel_case(strtolower($package)).'\\Api\\Repositories');
+        $namespace = new PhpNamespace($package.'\\Api\\Repositories');
 
         $psr4 = 'Foundry\\Framework\\Api\\Repositories\\Repository';
         $namespace->addUse($psr4);

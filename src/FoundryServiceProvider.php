@@ -19,7 +19,6 @@ class FoundryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
     }
 
     /**
@@ -37,7 +36,7 @@ class FoundryServiceProvider extends ServiceProvider
     /**
      * Merge config
      */
-    protected function mergeConfig()
+    private function mergeConfig()
     {
         $this->mergeConfigFrom(
             $this->getConfigPath(), 'auth'
@@ -48,7 +47,7 @@ class FoundryServiceProvider extends ServiceProvider
     /**
      * @return string
      */
-    protected function getConfigPath()
+    private function getConfigPath()
     {
         return __DIR__ . '/../config/auth.php';
     }
@@ -56,12 +55,13 @@ class FoundryServiceProvider extends ServiceProvider
     /**
      * Register console commands
      */
-    protected function registerConsoleCommands()
+    private function registerConsoleCommands()
     {
         $this->commands([
             GeneratePackageCommand::class,
             GenerateEntityCommand::class
         ]);
     }
+
 
 }

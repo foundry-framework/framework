@@ -85,7 +85,7 @@ abstract class Model
                  * If beforeUpdate method exists on the Entity Model, call it.
                  */
                 if(method_exists($entity, 'beforeUpdate')){
-                    call_user_func($entity->beforeUpdate());
+                    $entity->beforeUpdate();
                 }
 
                 $success = Store::update($entity);
@@ -94,7 +94,7 @@ abstract class Model
                  * If afterUpdate method exists on the Entity Model, call it.
                  */
                 if(method_exists($entity, 'afterUpdate')){
-                    call_user_func($entity->afterUpdate());
+                    $entity->afterUpdate();
                 }
 
             }else{
@@ -107,7 +107,7 @@ abstract class Model
                  * If beforeCreate method exists on the Entity Model, call it.
                  */
                 if(method_exists($entity, 'beforeCreate')){
-                    call_user_func($entity->beforeCreate());
+                    $entity->beforeCreate();
                 }
 
                 $success = Store::create($entity);
@@ -116,7 +116,7 @@ abstract class Model
                  * If afterCreate method exists on the Entity Model, call it.
                  */
                 if(method_exists($entity, 'afterCreate')){
-                    call_user_func($entity->afterCreate());
+                    $entity->afterCreate();
                 }
             }
 
@@ -149,7 +149,7 @@ abstract class Model
          * If beforeDestroy event exists on the Entity Model, call it.
          */
         if(method_exists($entity, 'beforeDestroy')){
-            call_user_func($entity->beforeDestroy());
+            $entity->beforeDestroy();
         }
 
         try {
@@ -162,7 +162,7 @@ abstract class Model
          * If afterDestroy event exists on the Entity Model, call it.
          */
         if(method_exists($obj, 'afterDestroy')){
-            call_user_func($obj->afterDestroy());
+            $obj->afterDestroy();
         }
 
 
@@ -182,7 +182,7 @@ abstract class Model
          * If beforeRestore method exists on the Entity Model, call it.
          */
         if(method_exists($entity, 'beforeRestore')){
-            call_user_func($entity->beforeRestore());
+            $entity->beforeRestore();
         }
 
         try {
@@ -195,7 +195,7 @@ abstract class Model
          * If afterRestore method exists on the Entity Model, call it.
          */
         if(method_exists($entity, 'afterRestore')){
-            call_user_func($entity->afterRestore());
+            $entity->afterRestore();
         }
 
 
@@ -246,7 +246,7 @@ abstract class Model
             $method = 'set'.camel_case($key);
 
             if(method_exists($entity, $method)){
-                $entity->$method($value);
+                call_user_func_array(array($entity, $method), [$value]);
             }
         }
 
