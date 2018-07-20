@@ -4,7 +4,7 @@ namespace Foundry\Framework;
 
 use Foundry\Framework\Api\Response\JsonResponse;
 use Foundry\Framework\Api\Response\Response;
-use user\Api\Models\UserModel;
+
 
 /**
  *
@@ -51,20 +51,20 @@ class CallService {
     public function call(string $plugin, string $entity, string $method, $data){
 
         /**@var $resp Response*/
-        $resp = null;
+        $resp = JsonResponse::external(null,APIException::NO_FOUND, 404);
 
         $namespace = 'foundry/'.camel_case($plugin).'/Api/Services/'.camel_case($entity);
 
-        $service = new $namespace();
+        $service = null;
+
+        try{
+            $service = new $namespace();
+        }catch (\Exception $e){}
 
         if($service){
             if(method_exists($service, $method)){
-                call_user_func_array(array($service, $method),is_array($data)? $data:[$data]);
-            }else{
-                $resp = JsonResponse::external(null,APIException::NO_FOUND, 404);
+                $resp = call_user_func_array(array($service, $method),is_array($data)? $data:[$data]);
             }
-        }else{
-            $resp = JsonResponse::external(null,APIException::NO_FOUND, 404);
         }
 
         return $resp;
