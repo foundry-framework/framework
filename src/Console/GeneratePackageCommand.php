@@ -18,7 +18,8 @@ class GeneratePackageCommand extends Command
      * @var string
      */
     protected $signature = 'foundry:generate:package
-    {name : The name of the package }';
+    {name : The name of the package }
+    {--description= : The description of this package}';
 
     /**
      * The console command description.
@@ -30,9 +31,36 @@ class GeneratePackageCommand extends Command
     public function handle()
     {
 
+        /**
+         * Package name and description
+         */
         $name = camel_case($this->argument('name'));
+        $description = $this->option('description');
+
+        /**
+         * Composer file content
+         */
+        $composer = "{\n\t\"name\": \"Foundry/".ucfirst($name).
+                    "\",\n\t\"description\": \"".$description.
+                    "\",\n\t\"type\": \"plugins/foundry\",\n\t\"require\": {\n\t\t\"composer/installers\": \"~1.0\"\n\t}\n}";
+
+        /**
+         * Roots folders
+         */
         $roots = ['/src', '/config'];
-        $files = ['/.gitignore','/.editorconfig','/.gitattributes','/readme.md'];
+
+        /**
+         * Roots files
+         */
+        $files = ['/.gitignore' => '',
+                    '/.editorconfig' => '',
+                    '/.gitattributes' => '',
+                    '/readme.md' => '',
+                    '/composer.json' => $composer];
+
+        /**
+         * Api folders
+         */
         $apiFolders = ['/Entities','/Models','/Repositories','/Services'];
 
         $base = base_path('packages/foundry');
@@ -45,8 +73,10 @@ class GeneratePackageCommand extends Command
         if(!is_dir($path)){
             $this->createDirectory($path);
 
-            foreach ($files as $file){
-                fopen($path.$file, 'w');
+            foreach ($files as $file => $content){
+                $f = fopen($path.$file, 'w');
+                fwrite($f, $content);
+                fclose($f);
             }
 
             foreach ($roots as $dir){
