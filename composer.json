@@ -3,6 +3,7 @@
     "description": "The Foundry Framework is an implementation of the Laravel Framework with an opinionated approach using Doctrine and Services to build core API driven applications.",
     "keywords": ["framework", "foundry"],
     "license": "MIT",
+    "type": "foundry-framework",
     "homepage": "https://www.foundryframework.com",
     "support": {
         "issues": "https://github.com/foundry-framework/framework/issues",
