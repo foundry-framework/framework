@@ -42,7 +42,7 @@ class GeneratePackageCommand extends Command
          */
         $composer = "{\n\t\"name\": \"Foundry/".ucfirst($name).
                     "\",\n\t\"description\": \"".$description.
-                    "\",\n\t\"type\": \"plugins/foundry\",\n\t\"require\": {\n\t\t\"composer/installers\": \"~1.0\"\n\t}\n}";
+                    "\",\n\t\"type\": \"foundry-plugin\",\n\t\"require\": {\n\t\t\"composer/installers\": \"~1.0\"\n\t}\n}";
 
         /**
          * Roots folders
