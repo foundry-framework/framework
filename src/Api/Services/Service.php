@@ -21,7 +21,7 @@ abstract class Service {
      * Get the Model of the Entity Object
      * @return Model
      */
-    static abstract function entityModel();
+    static abstract function model();
 
     /**
      * Get the Entity
@@ -40,7 +40,7 @@ abstract class Service {
      */
     static function post(array $data){
 
-        $model = self::entityModel();
+        $model = self::model();
         $resp = null;
 
         if($model::authorized()){
@@ -77,7 +77,7 @@ abstract class Service {
      */
     static function update($data){
 
-        $model = self::entityModel();
+        $model = self::model();
         $resp = null;
 
         $entity = $data;
@@ -110,7 +110,7 @@ abstract class Service {
 
         $entity = EntityManager::find(self::entity(), $id);
 
-        $model = self::entityModel();
+        $model = self::model();
 
         if($entity){
 

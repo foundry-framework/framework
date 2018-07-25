@@ -481,7 +481,7 @@ class GenerateEntityCommand extends Command
                 ->setBody('return new '.ucfirst(camel_case($name)).'();');
 
         $namespace->addUse($modelClass);
-        $model = new Method('entityModel');
+        $model = new Method('model');
         $model->setStatic()
                 ->addComment('Get the Model of the Entity Object'.$this->newLine())
                 ->addComment('@return '.ucfirst(camel_case($name)).'Model')

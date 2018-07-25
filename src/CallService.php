@@ -53,9 +53,11 @@ class CallService {
         /**@var $resp Response*/
         $resp = JsonResponse::external(null,APIException::NO_FOUND, 404);
 
-        $namespace = 'foundry/'.camel_case($plugin).'/Api/Services/'.camel_case($entity);
+        $namespace = 'foundry/'.camel_case($plugin).'/Api/Services/'.ucfirst(camel_case($entity)).'Service';
 
         $service = null;
+
+        //todo check that the service exists
 
         try{
             $service = new $namespace();
