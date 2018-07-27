@@ -5,6 +5,12 @@ namespace Foundry\Framework;
 use Foundry\Framework\Console\GenerateEntityCommand;
 use Foundry\Framework\Console\GeneratePluginCommand;
 use Foundry\Framework\Console\Migrations\Console\DiffCommand;
+use Foundry\Framework\Console\Migrations\Console\ExecuteCommand;
+use Foundry\Framework\Console\Migrations\Console\GenerateCommand;
+use Foundry\Framework\Console\Migrations\Console\LatestCommand;
+use Foundry\Framework\Console\Migrations\Console\MigrateCommand;
+use Foundry\Framework\Console\Migrations\Console\ResetCommand;
+use Foundry\Framework\Console\Migrations\Console\StatusCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -61,7 +67,13 @@ class FoundryServiceProvider extends ServiceProvider
         $this->commands([
             GeneratePluginCommand::class,
             GenerateEntityCommand::class,
-            DiffCommand::class
+            DiffCommand::class,
+            ExecuteCommand::class,
+            GenerateCommand::class,
+            LatestCommand::class,
+            MigrateCommand::class,
+            ResetCommand::class,
+            StatusCommand::class
         ]);
     }
 
