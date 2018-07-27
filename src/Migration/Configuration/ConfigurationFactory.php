@@ -74,7 +74,7 @@ class ConfigurationFactory
         } catch (MigrationException $e) {}
 
 
-        $directory = base_path('plugins/foundry/'.$plugin.'/migrations');
+        $directory = plugins_migrations_path($plugin);
 
         if(!is_dir($directory))
             mkdir($directory, 0777, true);

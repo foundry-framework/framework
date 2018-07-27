@@ -121,9 +121,8 @@ class GenerateEntityCommand extends Command
      */
     private function initEntityClass(string $package, string $name, string $table, array $fields, bool $timestamps, bool $deletable, bool $isUser) : PhpNamespace
     {
-        $package = 'Foundry\\'.ucfirst($package);
 
-        $namespace = new PhpNamespace($package.'\\Api\\Entities');
+        $namespace = new PhpNamespace(plugin_entities_namespace($package));
 
         $psr4 = $isUser? 'Foundry\\Framework\\Api\\Entities\\User': 'Foundry\\Framework\\Api\\Entities\\Entity';
         $alias = $isUser? 'BaseUser': 'BaseEntity';
@@ -145,14 +144,12 @@ class GenerateEntityCommand extends Command
      */
     private function initModelClass(string $package, string $name) : PhpNamespace
     {
-        $package = 'Foundry\\'.ucfirst($package);
-
-        $namespace = new PhpNamespace($package.'\\Api\\Models');
+        $namespace = new PhpNamespace(plugin_models_namespace($package));
 
         $psr4 = 'Foundry\\Framework\\Api\\Models\\Model';
         $namespace->addUse($psr4);
 
-        $entity = $package.'\\Api\\Entities\\'.$name;
+        $entity = plugin_entities_namespace($package).'\\'.$name;
 
         return $this->createModelClass($namespace, $name, $entity, $psr4);
     }
@@ -167,15 +164,13 @@ class GenerateEntityCommand extends Command
      */
     private function initServiceClass(string $package, string $name): PhpNamespace
     {
-        $package = 'Foundry\\'.ucfirst($package);
-
-        $namespace = new PhpNamespace($package.'\\Api\\Services');
+        $namespace = new PhpNamespace(plugin_services_namespace($package));
 
         $psr4 = 'Foundry\\Framework\\Api\\Services\\Service';
         $namespace->addUse($psr4);
 
-        $entity = $package.'\\Api\\Entities\\'.$name;
-        $model = $package.'\\Api\\Models\\'.$name.'Model';
+        $entity = plugin_entities_namespace($package).'\\'.$name;
+        $model = plugin_models_namespace($package).'\\'.$name.'Model';
 
         return $this->createServiceClass($namespace, $name,$entity, $model, $psr4);
     }
@@ -190,9 +185,7 @@ class GenerateEntityCommand extends Command
      */
     private function initRepoClass(string $package, string $name) : PhpNamespace
     {
-        $package = 'Foundry\\'.ucfirst($package);
-
-        $namespace = new PhpNamespace($package.'\\Api\\Repositories');
+        $namespace = new PhpNamespace(plugin_repos_namespace($package));
 
         $psr4 = 'Foundry\\Framework\\Api\\Repositories\\Repository';
         $namespace->addUse($psr4);

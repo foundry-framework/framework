@@ -136,9 +136,9 @@ class DiffCommand extends Command
     protected function getPluginTableFilterExpression(ObjectManager $em, $plugin){
 
         $finder = new Finder();
-        $finder->files()->name('*.php')->in(base_path('plugins/foundry/'.$plugin.'/src/Api/Entities'));
+        $finder->files()->name('*.php')->in(plugin_entities_path($plugin));
 
-        $namespace = 'Foundry\\'.ucfirst($plugin).'\Api\Entities\\';
+        $namespace = plugin_entities_namespace($plugin).'\\';
 
         $regex = '/';
 
