@@ -3,7 +3,7 @@
 namespace Foundry\Framework;
 
 use Foundry\Framework\Console\GenerateEntityCommand;
-use Foundry\Framework\Console\GeneratePackageCommand;
+use Foundry\Framework\Console\GeneratePluginCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -58,7 +58,7 @@ class FoundryServiceProvider extends ServiceProvider
     private function registerConsoleCommands()
     {
         $this->commands([
-            GeneratePackageCommand::class,
+            GeneratePluginCommand::class,
             GenerateEntityCommand::class
         ]);
     }

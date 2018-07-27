@@ -11,13 +11,13 @@ namespace Foundry\Framework\Console;
  *
  * @author Medard Ilunga
  */
-class GeneratePackageCommand extends Command
+class GeneratePluginCommand extends Command
 {
     /**
      * The name and signature of the console command.
      * @var string
      */
-    protected $signature = 'foundry:generate:package
+    protected $signature = 'foundry:generate:plugin
     {name : The name of the package }
     {--description= : The description of this package}';
 
@@ -47,7 +47,7 @@ class GeneratePackageCommand extends Command
         /**
          * Roots folders
          */
-        $roots = ['/src', '/config'];
+        $roots = ['/src', '/config', 'migrations'];
 
         /**
          * Roots files
@@ -63,7 +63,7 @@ class GeneratePackageCommand extends Command
          */
         $apiFolders = ['/Entities','/Models','/Repositories','/Services'];
 
-        $base = base_path('packages/foundry');
+        $base = base_path('plugins/foundry');
 
         if(!$base)
             $this->createDirectory($base);
