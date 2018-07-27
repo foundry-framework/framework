@@ -40,10 +40,11 @@ class GeneratePluginCommand extends Command
         /**
          * Composer file content
          */
-        $composer = "{\n\t\"name\": \"Foundry/".ucfirst($name).
+        $composer = "{\n\t\"name\": \"foundry-plugins/".$name.
                     "\",\n\t\"description\": \"".$description.
                     "\",\n\t\"type\": \"foundry-plugins\",\n\t\"require\": {\n\t},".
-                    "\n\t\"autoload\": {\n\t\t\"psr-4\": {\n\t\t\t\"Foundry\\\\".ucfirst($name)."\\\\\": \"src/\"\n\t\t}\n\t}" ."\t\n}";
+                    "\n\t\"autoload\": {\n\t\t\"psr-4\": {\n\t\t\t\"Foundry\\\\".ucfirst($name)."\\\\\": \"src/\"\n\t\t}\n\t},".
+                    "\n\t\"minimum-stability\": \"dev\",\n\t\"prefer-stable\": true\t\n}";
 
         /**
          * Roots folders
