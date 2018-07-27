@@ -4,6 +4,7 @@ namespace Foundry\Framework;
 
 use Foundry\Framework\Console\GenerateEntityCommand;
 use Foundry\Framework\Console\GeneratePluginCommand;
+use Foundry\Framework\Console\Migrations\Console\DiffCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -59,7 +60,8 @@ class FoundryServiceProvider extends ServiceProvider
     {
         $this->commands([
             GeneratePluginCommand::class,
-            GenerateEntityCommand::class
+            GenerateEntityCommand::class,
+            DiffCommand::class
         ]);
     }
 
