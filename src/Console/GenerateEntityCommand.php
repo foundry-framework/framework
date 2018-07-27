@@ -42,7 +42,7 @@ class GenerateEntityCommand extends Command
         $timestamps = $this->confirm("Does the Entity require timestamps (created_at, updated_at)? ");
         $deleted = $this->confirm("Can the object be soft deleted?");
 
-        $package = $this->argument('package');
+        $package = camel_case(strtolower($this->argument('package')));
         $isUser = $this->option('user');
         $table = $this->option('table')?
                                     strtolower(preg_replace('/\s+[-]/','_', $this->option('table'))):
@@ -51,7 +51,7 @@ class GenerateEntityCommand extends Command
         $name = ucfirst(camel_case($this->argument('name')));
         $fields = $this->getFields($this->option('properties')?$this->option('properties'):'');
 
-        $root = base_path('plugins/foundry/'.camel_case(strtolower($package)));
+        $root = base_path('plugins/foundry/'.$package);
 
         if(is_dir($root)){
 
@@ -60,7 +60,6 @@ class GenerateEntityCommand extends Command
              */
 
             $dir = $root.'/src/Api';
-            $package = 'foundry/'.camel_case(strtolower($package));
 
             if(!is_dir($dir))
                 $this->message('The src/Api folder was not found in '. $package. ' package');
@@ -88,16 +87,16 @@ class GenerateEntityCommand extends Command
              * Create classes
              */
 
-            $entity = $this->initEntityClass($name, $table, $fields, $timestamps, $deleted, $isUser);
+            $entity = $this->initEntityClass($package, $name, $table, $fields, $timestamps, $deleted, $isUser);
             $this->createFile($entityFolder.'/'. $name, $entity);
 
-            $model = $this->initModelClass($name);
+            $model = $this->initModelClass($package,$name);
             $this->createFile($modelFolder.'/'.$name.'Model', $model);
 
-            $service = $this->initServiceClass($name);
+            $service = $this->initServiceClass($package,$name);
             $this->createFile($servicesFolder.'/'.$name.'Service', $service);
 
-            $repo = $this->initRepoClass($name);
+            $repo = $this->initRepoClass($package,$name);
             $this->createFile($repoFolder.'/'.$name.'Repository', $repo);
 
             $this->message('Entity class and all related classes added successfully!');
@@ -110,6 +109,7 @@ class GenerateEntityCommand extends Command
     /**
      * Init an Entity class
      *
+     * @param string $package | Plugin name
      * @param string $name | Name of the Entity
      * @param string $table | Database name of the table related to this entity
      * @param array $fields | Associative array of Entity properties
@@ -119,9 +119,9 @@ class GenerateEntityCommand extends Command
      *
      * @return PhpNamespace
      */
-    private function initEntityClass(string $name, string $table, array $fields, bool $timestamps, bool $deletable, bool $isUser) : PhpNamespace
+    private function initEntityClass(string $package, string $name, string $table, array $fields, bool $timestamps, bool $deletable, bool $isUser) : PhpNamespace
     {
-        $package = 'Foundry\\'.$name;
+        $package = 'Foundry\\'.ucfirst($package);
 
         $namespace = new PhpNamespace($package.'\\Api\\Entities');
 
@@ -138,13 +138,14 @@ class GenerateEntityCommand extends Command
     /**
      * Init a model class
      *
+     * @param string $package | Plugin name
      * @param string $name | Name of the Entity
      *
      * @return PhpNamespace
      */
-    private function initModelClass(string $name) : PhpNamespace
+    private function initModelClass(string $package, string $name) : PhpNamespace
     {
-        $package = 'Foundry\\'.$name;
+        $package = 'Foundry\\'.ucfirst($package);
 
         $namespace = new PhpNamespace($package.'\\Api\\Models');
 
@@ -159,12 +160,14 @@ class GenerateEntityCommand extends Command
     /**
      * Init a service class
      *
+     * @param string $package | Plugin name
      * @param string $name | Name of the Entity
+     *
      * @return PhpNamespace
      */
-    private function initServiceClass(string $name): PhpNamespace
+    private function initServiceClass(string $package, string $name): PhpNamespace
     {
-        $package = 'Foundry\\'.$name;
+        $package = 'Foundry\\'.ucfirst($package);
 
         $namespace = new PhpNamespace($package.'\\Api\\Services');
 
@@ -180,12 +183,14 @@ class GenerateEntityCommand extends Command
     /**
      * Init a repository class
      *
+     * @param string $package | Plugin name
      * @param string $name | Name of the Entity
+     *
      * @return PhpNamespace
      */
-    private function initRepoClass(string $name) : PhpNamespace
+    private function initRepoClass(string $package, string $name) : PhpNamespace
     {
-        $package = 'Foundry\\'.$name;
+        $package = 'Foundry\\'.ucfirst($package);
 
         $namespace = new PhpNamespace($package.'\\Api\\Repositories');
 
