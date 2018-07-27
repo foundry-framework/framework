@@ -51,7 +51,7 @@ class GenerateEntityCommand extends Command
         $name = ucfirst(camel_case($this->argument('name')));
         $fields = $this->getFields($this->option('properties')?$this->option('properties'):'');
 
-        $root = base_path('packages/foundry/'.camel_case(strtolower($package)));
+        $root = base_path('plugins/foundry/'.camel_case(strtolower($package)));
 
         if(is_dir($root)){
 
@@ -88,29 +88,28 @@ class GenerateEntityCommand extends Command
              * Create classes
              */
 
-            $entity = $this->initEntityClass($package, $name, $table, $fields, $timestamps, $deleted, $isUser);
+            $entity = $this->initEntityClass($name, $table, $fields, $timestamps, $deleted, $isUser);
             $this->createFile($entityFolder.'/'. $name, $entity);
 
-            $model = $this->initModelClass($package, $name);
+            $model = $this->initModelClass($name);
             $this->createFile($modelFolder.'/'.$name.'Model', $model);
 
-            $service = $this->initServiceClass($package, $name);
+            $service = $this->initServiceClass($name);
             $this->createFile($servicesFolder.'/'.$name.'Service', $service);
 
-            $repo = $this->initRepoClass($package, $name);
+            $repo = $this->initRepoClass($name);
             $this->createFile($repoFolder.'/'.$name.'Repository', $repo);
 
             $this->message('Entity class and all related classes added successfully!');
 
         }else
-            $this->message('Package '. $package. ' does not exist!', 'red');
+            $this->message('Plugin '. $package. ' does not exist!', 'red');
 
     }
 
     /**
      * Init an Entity class
      *
-     * @param string $package | Name of the root package
      * @param string $name | Name of the Entity
      * @param string $table | Database name of the table related to this entity
      * @param array $fields | Associative array of Entity properties
@@ -120,8 +119,10 @@ class GenerateEntityCommand extends Command
      *
      * @return PhpNamespace
      */
-    private function initEntityClass(string $package, string $name, string $table, array $fields, bool $timestamps, bool $deletable, bool $isUser) : PhpNamespace
+    private function initEntityClass(string $name, string $table, array $fields, bool $timestamps, bool $deletable, bool $isUser) : PhpNamespace
     {
+        $package = 'Foundry\\'.$name;
+
         $namespace = new PhpNamespace($package.'\\Api\\Entities');
 
         $psr4 = $isUser? 'Foundry\\Framework\\Api\\Entities\\User': 'Foundry\\Framework\\Api\\Entities\\Entity';
@@ -134,8 +135,17 @@ class GenerateEntityCommand extends Command
 
     }
 
-    private function initModelClass(string $package, string $name) : PhpNamespace
+    /**
+     * Init a model class
+     *
+     * @param string $name | Name of the Entity
+     *
+     * @return PhpNamespace
+     */
+    private function initModelClass(string $name) : PhpNamespace
     {
+        $package = 'Foundry\\'.$name;
+
         $namespace = new PhpNamespace($package.'\\Api\\Models');
 
         $psr4 = 'Foundry\\Framework\\Api\\Models\\Model';
@@ -146,8 +156,16 @@ class GenerateEntityCommand extends Command
         return $this->createModelClass($namespace, $name, $entity, $psr4);
     }
 
-    private function initServiceClass(string $package, string $name): PhpNamespace
+    /**
+     * Init a service class
+     *
+     * @param string $name | Name of the Entity
+     * @return PhpNamespace
+     */
+    private function initServiceClass(string $name): PhpNamespace
     {
+        $package = 'Foundry\\'.$name;
+
         $namespace = new PhpNamespace($package.'\\Api\\Services');
 
         $psr4 = 'Foundry\\Framework\\Api\\Services\\Service';
@@ -159,8 +177,16 @@ class GenerateEntityCommand extends Command
         return $this->createServiceClass($namespace, $name,$entity, $model, $psr4);
     }
 
-    private function initRepoClass(string $package, string $name) : PhpNamespace
+    /**
+     * Init a repository class
+     *
+     * @param string $name | Name of the Entity
+     * @return PhpNamespace
+     */
+    private function initRepoClass(string $name) : PhpNamespace
     {
+        $package = 'Foundry\\'.$name;
+
         $namespace = new PhpNamespace($package.'\\Api\\Repositories');
 
         $psr4 = 'Foundry\\Framework\\Api\\Repositories\\Repository';

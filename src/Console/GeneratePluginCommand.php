@@ -18,8 +18,8 @@ class GeneratePluginCommand extends Command
      * @var string
      */
     protected $signature = 'foundry:generate:plugin
-    {name : The name of the package }
-    {--description= : The description of this package}';
+    {name : The name of the plugin }
+    {--description= : The description of this plugin}';
 
     /**
      * The console command description.
@@ -34,7 +34,7 @@ class GeneratePluginCommand extends Command
         /**
          * Package name and description
          */
-        $name = camel_case($this->argument('name'));
+        $name = camel_case(strtolower($this->argument('name')));
         $description = $this->option('description');
 
         /**
@@ -42,12 +42,13 @@ class GeneratePluginCommand extends Command
          */
         $composer = "{\n\t\"name\": \"Foundry/".ucfirst($name).
                     "\",\n\t\"description\": \"".$description.
-                    "\",\n\t\"type\": \"foundry-plugin\",\n\t\"require\": {\n\t\t\"composer/installers\": \"~1.0\"\n\t}\n}";
+                    "\",\n\t\"type\": \"foundry-plugin\",\n\t\"require\": {\n\t},".
+                    "\n\t\"autoload\": {\n\t\t\"psr-4\": {\n\t\t\t\"Foundry\\\\".ucfirst($name)."\\\\\": \"src/\"\n\t\t}\n\t}" ."\t\n}";
 
         /**
          * Roots folders
          */
-        $roots = ['/src', '/config', 'migrations'];
+        $roots = ['/src', '/config', '/migrations'];
 
         /**
          * Roots files
