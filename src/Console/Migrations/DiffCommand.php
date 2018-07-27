@@ -12,6 +12,13 @@ use LaravelDoctrine\Migrations\Output\MigrationFileGenerator;
 use LaravelDoctrine\Migrations\Output\SqlBuilder;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class DiffCommand
+ *
+ * @package Foundry\Framework\Console\Migrations\Console
+ *
+ * @author Medard Ilunga
+ */
 class DiffCommand extends Command
 {
     /**
@@ -41,7 +48,7 @@ class DiffCommand extends Command
         ManagerRegistry $registry,
         SqlBuilder $builder,
         MigrationFileGenerator $generator
-    ) {
+    ){
 
         $plugin = $this->argument('plugin');
 
@@ -49,43 +56,46 @@ class DiffCommand extends Command
         $em            = $registry->getManager($this->option('connection'));
         $connection    = $configuration->getConnection();
 
-        $this->info($plugin);
+        $filterExpr = $this->getPluginTableFilterExpression($em, $plugin);
 
-//        // Overrule the filter
-//        if ($filterExpr = $this->option('filter-expression')) {
-//            $connection->getConfiguration()->setFilterSchemaAssetsExpression($filterExpr);
-//        }
-//
-//        $fromSchema = $connection->getSchemaManager()->createSchema();
-//        $toSchema   = $this->getSchemaProvider($em)->createSchema();
-//
-//
-//        // Drop tables which don't suffice to the filter regex
-//        if ($filterExpr = $connection->getConfiguration()->getFilterSchemaAssetsExpression()) {
-//            foreach ($toSchema->getTables() as $table) {
-//                $tableName = $table->getName();
-//                if (!preg_match($filterExpr, $this->resolveTableName($tableName))) {
-//                    $toSchema->dropTable($tableName);
-//                }
-//            }
-//        }
-//
-//        $up   = $builder->up($configuration, $fromSchema, $toSchema);
-//        $down = $builder->down($configuration, $fromSchema, $toSchema);
-//
-//        if (!$up && !$down) {
-//            return $this->error('No changes detected in your mapping information.');
-//        }
-//
-//        $path = $generator->generate(
-//            $configuration,
-//            false,
-//            false,
-//            $up,
-//            $down
-//        );
 
-        $this->line(sprintf('Generated new migration class to "<info>%s</info>" from schema differences.', $path));
+        if ($this->option('filter-expression')) {
+            $filterExpr .= substr($this->option('filter-expression'), 0);
+        }else{
+            $filterExpr .= '/';
+        }
+
+        $connection->getConfiguration()->setFilterSchemaAssetsExpression($filterExpr);
+
+        $fromSchema = $connection->getSchemaManager()->createSchema();
+        $toSchema   = $this->getSchemaProvider($em)->createSchema();
+
+        // Drop tables which don't suffice to the filter regex
+        if ($filterExpr = $connection->getConfiguration()->getFilterSchemaAssetsExpression()) {
+            foreach ($toSchema->getTables() as $table) {
+                $tableName = $table->getName();
+                if (!preg_match($filterExpr, $this->resolveTableName($tableName))) {
+                    $toSchema->dropTable($tableName);
+                }
+            }
+        }
+
+        $up   = $builder->up($configuration, $fromSchema, $toSchema);
+        $down = $builder->down($configuration, $fromSchema, $toSchema);
+
+        if (!$up && !$down) {
+            return $this->error('No changes detected in your mapping information.');
+        }
+
+        $path = $generator->generate(
+            $configuration,
+            false,
+            false,
+            $up,
+            $down
+        );
+
+        $this->line(sprintf('Generated new migration class for "<info>%s plugin</info>" to "<info>%s</info>" from schema differences.', $plugin, $path));
     }
 
     /**
@@ -115,21 +125,37 @@ class DiffCommand extends Command
         return false === $pos ? $name : substr($name, $pos + 1);
     }
 
+    /**
+     * Get table names of all entities of the particular plugin as a regex expression
+     *
+     * @param ObjectManager $em
+     * @param $plugin | Plugin name
+     *
+     * @return string
+     */
     protected function getPluginTableFilterExpression(ObjectManager $em, $plugin){
 
         $finder = new Finder();
-        $finder->files()->name('*.php')->in(app_path('plugins/foundry/'.$plugin.'/src/Api/Entities/'));
+        $finder->files()->name('*.php')->in(base_path('plugins/foundry/'.$plugin.'/src/Api/Entities'));
 
         $namespace = 'Foundry\\'.ucfirst($plugin).'\Api\Entities\\';
 
-        $tables = array();
+        $regex = '/';
 
         foreach ($finder as $file){
 
             $class = $namespace.basename($file,'.php');
             $entity = new $class();
 
-            array_push($tables, $em->getClassMetadata(get_class($entity))->getTableName());
+            $name = $em->getClassMetadata(get_class($entity))->getTableName();
+
+            if(strcmp($regex, '/') !== 0)
+                $regex .= '|';
+
+            $regex .= '^'.$name. '$';
+
         }
+
+        return $regex;
     }
 }
