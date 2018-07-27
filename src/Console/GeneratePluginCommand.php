@@ -42,7 +42,7 @@ class GeneratePluginCommand extends Command
          */
         $composer = "{\n\t\"name\": \"Foundry/".ucfirst($name).
                     "\",\n\t\"description\": \"".$description.
-                    "\",\n\t\"type\": \"foundry-plugin\",\n\t\"require\": {\n\t},".
+                    "\",\n\t\"type\": \"foundry-plugins\",\n\t\"require\": {\n\t},".
                     "\n\t\"autoload\": {\n\t\t\"psr-4\": {\n\t\t\t\"Foundry\\\\".ucfirst($name)."\\\\\": \"src/\"\n\t\t}\n\t}" ."\t\n}";
 
         /**
