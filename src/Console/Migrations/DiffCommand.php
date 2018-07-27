@@ -3,23 +3,21 @@
 namespace Foundry\Framework\Console\Migrations\Console;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Migrations\Provider\OrmSchemaProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use Illuminate\Console\Command;
 use LaravelDoctrine\Migrations\Output\MigrationFileGenerator;
 use LaravelDoctrine\Migrations\Output\SqlBuilder;
-use Symfony\Component\Finder\Finder;
 
 /**
  * Class DiffCommand
+ * refer to Laravel doctrine
  *
  * @package Foundry\Framework\Console\Migrations\Console
  *
  * @author Medard Ilunga
  */
-class DiffCommand extends Command
+class DiffCommand extends MigrationCommand
 {
     /**
      * The name and signature of the console command.
@@ -123,39 +121,5 @@ class DiffCommand extends Command
         $pos = strpos($name, '.');
 
         return false === $pos ? $name : substr($name, $pos + 1);
-    }
-
-    /**
-     * Get table names of all entities of the particular plugin as a regex expression
-     *
-     * @param ObjectManager $em
-     * @param $plugin | Plugin name
-     *
-     * @return string
-     */
-    protected function getPluginTableFilterExpression(ObjectManager $em, $plugin){
-
-        $finder = new Finder();
-        $finder->files()->name('*.php')->in(plugin_entities_path($plugin));
-
-        $namespace = plugin_entities_namespace($plugin).'\\';
-
-        $regex = '/';
-
-        foreach ($finder as $file){
-
-            $class = $namespace.basename($file,'.php');
-            $entity = new $class();
-
-            $name = $em->getClassMetadata(get_class($entity))->getTableName();
-
-            if(strcmp($regex, '/') !== 0)
-                $regex .= '|';
-
-            $regex .= '^'.$name. '$';
-
-        }
-
-        return $regex;
     }
 }
