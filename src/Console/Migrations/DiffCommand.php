@@ -50,50 +50,56 @@ class DiffCommand extends MigrationCommand
 
         $plugin = $this->argument('plugin');
 
-        $configuration = $provider->getForConnection($plugin, $this->option('connection'));
-        $em            = $registry->getManager($this->option('connection'));
-        $connection    = $configuration->getConnection();
+        if($this->isPlugin($plugin)){
 
-        $filterExpr = $this->getPluginTableFilterExpression($em, $plugin);
+            $configuration = $provider->getForConnection($plugin, $this->option('connection'));
+            $em            = $registry->getManager($this->option('connection'));
+            $connection    = $configuration->getConnection();
+
+            $filterExpr = $this->getPluginTableFilterExpression($em, $plugin);
 
 
-        if ($this->option('filter-expression')) {
-            $filterExpr .= substr($this->option('filter-expression'), 0);
-        }else{
-            $filterExpr .= '/';
-        }
+            if ($this->option('filter-expression')) {
+                $filterExpr .= substr($this->option('filter-expression'), 0);
+            }else{
+                $filterExpr .= '/';
+            }
 
-        $connection->getConfiguration()->setFilterSchemaAssetsExpression($filterExpr);
+            $connection->getConfiguration()->setFilterSchemaAssetsExpression($filterExpr);
 
-        $fromSchema = $connection->getSchemaManager()->createSchema();
-        $toSchema   = $this->getSchemaProvider($em)->createSchema();
+            $fromSchema = $connection->getSchemaManager()->createSchema();
+            $toSchema   = $this->getSchemaProvider($em)->createSchema();
 
-        // Drop tables which don't suffice to the filter regex
-        if ($filterExpr = $connection->getConfiguration()->getFilterSchemaAssetsExpression()) {
-            foreach ($toSchema->getTables() as $table) {
-                $tableName = $table->getName();
-                if (!preg_match($filterExpr, $this->resolveTableName($tableName))) {
-                    $toSchema->dropTable($tableName);
+            // Drop tables which don't suffice to the filter regex
+            if ($filterExpr = $connection->getConfiguration()->getFilterSchemaAssetsExpression()) {
+                foreach ($toSchema->getTables() as $table) {
+                    $tableName = $table->getName();
+                    if (!preg_match($filterExpr, $this->resolveTableName($tableName))) {
+                        $toSchema->dropTable($tableName);
+                    }
                 }
             }
+
+            $up   = $builder->up($configuration, $fromSchema, $toSchema);
+            $down = $builder->down($configuration, $fromSchema, $toSchema);
+
+            if (!$up && !$down) {
+                return $this->error('No changes detected in your mapping information.');
+            }
+
+            $path = $generator->generate(
+                $configuration,
+                false,
+                false,
+                $up,
+                $down
+            );
+
+            $this->line(sprintf('Generated new migration class for "<info>%s plugin</info>" to "<info>%s</info>" from schema differences.', $plugin, $path));
+        }else{
+            $this->line(sprintf('No "<info>%s </info>" plugin found!', camel_case(strtolower($plugin))));
         }
 
-        $up   = $builder->up($configuration, $fromSchema, $toSchema);
-        $down = $builder->down($configuration, $fromSchema, $toSchema);
-
-        if (!$up && !$down) {
-            return $this->error('No changes detected in your mapping information.');
-        }
-
-        $path = $generator->generate(
-            $configuration,
-            false,
-            false,
-            $up,
-            $down
-        );
-
-        $this->line(sprintf('Generated new migration class for "<info>%s plugin</info>" to "<info>%s</info>" from schema differences.', $plugin, $path));
     }
 
     /**

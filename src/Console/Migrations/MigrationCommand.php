@@ -9,6 +9,18 @@ use Symfony\Component\Finder\Finder;
 class MigrationCommand extends Command
 {
 
+
+    /**
+     * Check if a given name is a plugin
+     *
+     * @param $plugin | name of the plugin to check
+     *
+     * @return bool
+     */
+    protected function isPlugin($plugin){
+        return is_dir(plugin_path($plugin));
+    }
+
     /**
      * Get table names of all entities of the particular plugin as a regex expression
      *

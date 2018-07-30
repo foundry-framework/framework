@@ -39,66 +39,71 @@ class StatusCommand extends MigrationCommand
 
         $plugin = $this->argument('plugin');
 
-        $configuration = $provider->getForConnection(
-            $plugin,
-            $this->option('connection')
-        );
+        if($this->isPlugin($plugin)){
 
-        $formattedVersions = [];
-        foreach (['prev', 'current', 'next', 'latest'] as $alias) {
-            $version = $configuration->resolveVersionAlias($alias);
-            if ($version === null) {
-                if ($alias == 'next') {
-                    $formattedVersions[$alias] = 'Already at latest version';
-                } elseif ($alias == 'prev') {
-                    $formattedVersions[$alias] = 'Already at first version';
+            $configuration = $provider->getForConnection(
+                $plugin,
+                $this->option('connection')
+            );
+
+            $formattedVersions = [];
+            foreach (['prev', 'current', 'next', 'latest'] as $alias) {
+                $version = $configuration->resolveVersionAlias($alias);
+                if ($version === null) {
+                    if ($alias == 'next') {
+                        $formattedVersions[$alias] = 'Already at latest version for '.camel_case(strtolower($plugin)). ' plugin';
+                    } elseif ($alias == 'prev') {
+                        $formattedVersions[$alias] = 'Already at first version for '.camel_case(strtolower($plugin)).' plugin';
+                    }
+                } elseif ($version === '0') {
+                    $formattedVersions[$alias] = '<comment>0</comment>';
+                } else {
+                    $formattedVersions[$alias] = $configuration->getDateTime($version) . ' (<comment>' . $version . '</comment>)';
                 }
-            } elseif ($version === '0') {
-                $formattedVersions[$alias] = '<comment>0</comment>';
-            } else {
-                $formattedVersions[$alias] = $configuration->getDateTime($version) . ' (<comment>' . $version . '</comment>)';
-            }
-        }
-
-        $executedMigrations               = $configuration->getMigratedVersions();
-        $availableMigrations              = $configuration->getAvailableVersions();
-        $executedUnavailableMigrations    = array_diff($executedMigrations, $availableMigrations);
-        $numExecutedUnavailableMigrations = count($executedUnavailableMigrations);
-        $newMigrations                    = count(array_diff($availableMigrations, $executedMigrations));
-
-        $this->line("\n <info>==</info> Configuration\n");
-
-        $info = [
-            'Database Driver'                 => $configuration->getConnection()->getDriver()->getName(),
-            'Database Name'                   => $configuration->getConnection()->getDatabase(),
-            'Version Table Name'              => $configuration->getMigrationsTableName(),
-            'Migrations Namespace'            => $configuration->getMigrationsNamespace(),
-            'Migrations Directory'            => $configuration->getMigrationsDirectory(),
-            'Previous Version'                => $formattedVersions['prev'],
-            'Current Version'                 => $formattedVersions['current'],
-            'Next Version'                    => $formattedVersions['next'],
-            'Latest Version'                  => $formattedVersions['latest'],
-            'Executed Migrations'             => count($executedMigrations),
-            'Executed Unavailable Migrations' => $numExecutedUnavailableMigrations > 0 ? '<error>' . $numExecutedUnavailableMigrations . '</error>' : 0,
-            'Available Migrations'            => count($availableMigrations),
-            'New Migrations'                  => $newMigrations > 0 ? '<question>' . $newMigrations . '</question>' : 0
-        ];
-        foreach ($info as $name => $value) {
-            $this->line('    <comment>>></comment> ' . $name . ': ' . str_repeat(' ', 50 - strlen($name)) . $value);
-        }
-
-        if ($this->option('show-versions')) {
-            if ($migrations = $configuration->getMigrations()) {
-                $executedUnavailableMigrations = $migrations;
-                $this->line("\n <info>==</info> Available Migration Versions\n");
-
-                $this->showVersions($migrations, $configuration);
             }
 
-            if (!empty($executedUnavailableMigrations)) {
-                $this->line("\n <info>==</info> Previously Executed Unavailable Migration Versions\n");
-                $this->showVersions($executedUnavailableMigrations, $configuration);
+            $executedMigrations               = $configuration->getMigratedVersions();
+            $availableMigrations              = $configuration->getAvailableVersions();
+            $executedUnavailableMigrations    = array_diff($executedMigrations, $availableMigrations);
+            $numExecutedUnavailableMigrations = count($executedUnavailableMigrations);
+            $newMigrations                    = count(array_diff($availableMigrations, $executedMigrations));
+
+            $this->line("\n <info>==</info> Configuration\n");
+
+            $info = [
+                'Database Driver'                 => $configuration->getConnection()->getDriver()->getName(),
+                'Database Name'                   => $configuration->getConnection()->getDatabase(),
+                'Version Table Name'              => $configuration->getMigrationsTableName(),
+                'Migrations Namespace'            => $configuration->getMigrationsNamespace(),
+                'Migrations Directory'            => $configuration->getMigrationsDirectory(),
+                'Previous Version'                => $formattedVersions['prev'],
+                'Current Version'                 => $formattedVersions['current'],
+                'Next Version'                    => $formattedVersions['next'],
+                'Latest Version'                  => $formattedVersions['latest'],
+                'Executed Migrations'             => count($executedMigrations),
+                'Executed Unavailable Migrations' => $numExecutedUnavailableMigrations > 0 ? '<error>' . $numExecutedUnavailableMigrations . '</error>' : 0,
+                'Available Migrations'            => count($availableMigrations),
+                'New Migrations'                  => $newMigrations > 0 ? '<question>' . $newMigrations . '</question>' : 0
+            ];
+            foreach ($info as $name => $value) {
+                $this->line('    <comment>>></comment> ' . $name . ': ' . str_repeat(' ', 50 - strlen($name)) . $value);
             }
+
+            if ($this->option('show-versions')) {
+                if ($migrations = $configuration->getMigrations()) {
+                    $executedUnavailableMigrations = $migrations;
+                    $this->line("\n <info>==</info> Available Migration Versions for ".camel_case(strtolower($plugin))." plugin\n");
+
+                    $this->showVersions($migrations, $configuration);
+                }
+
+                if (!empty($executedUnavailableMigrations)) {
+                    $this->line("\n <info>==</info> Previously Executed Unavailable Migration Versions for ".camel_case(strtolower($plugin))." plugin\n");
+                    $this->showVersions($executedUnavailableMigrations, $configuration);
+                }
+            }
+        }else{
+            $this->line(sprintf('No "<info>%s </info>" plugin found!', camel_case(strtolower($plugin))));
         }
     }
 

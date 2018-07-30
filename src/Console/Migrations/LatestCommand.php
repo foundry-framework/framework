@@ -36,11 +36,17 @@ class LatestCommand extends MigrationCommand
     {
         $plugin = $this->argument('plugin');
 
-        $configuration = $provider->getForConnection(
-            $plugin,
-            $this->option('connection')
-        );
+        if($this->isPlugin($plugin)){
+            $configuration = $provider->getForConnection(
+                $plugin,
+                $this->option('connection')
+            );
 
-        $this->line('<info>Latest version:</info> ' . $configuration->getLatestVersion());
+            $this->line('<info>Latest version:</info> ' . $configuration->getLatestVersion());
+        }else{
+            $this->line(sprintf('No "<info>%s </info>" plugin found!', camel_case(strtolower($plugin))));
+        }
+
+
     }
 }

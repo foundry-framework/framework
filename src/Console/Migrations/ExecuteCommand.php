@@ -53,26 +53,31 @@ class ExecuteCommand extends MigrationCommand
 
         $plugin = $this->argument('plugin');
 
-        $configuration = $provider->getForConnection(
-            $plugin,
-            $this->option('connection')
-        );
+        if($this->isPlugin($plugin)){
+            $configuration = $provider->getForConnection(
+                $plugin,
+                $this->option('connection')
+            );
 
-        $version   = $this->argument('version');
-        $direction = $this->option('down') ? 'down' : 'up';
+            $version   = $this->argument('version');
+            $direction = $this->option('down') ? 'down' : 'up';
 
-        try {
-            $version = $configuration->getVersion($version);
-        } catch (MigrationException $e) {}
+            try {
+                $version = $configuration->getVersion($version);
+            } catch (MigrationException $e) {}
 
-        if ($path = $this->option('write-sql')) {
-            $migrator->executeToFile($version, $direction, $path);
-        } else {
-            $migrator->execute($version, $direction, $this->option('dry-run'), $this->option('query-time'));
+            if ($path = $this->option('write-sql')) {
+                $migrator->executeToFile($version, $direction, $path);
+            } else {
+                $migrator->execute($version, $direction, $this->option('dry-run'), $this->option('query-time'));
+            }
+
+            foreach ($migrator->getNotes() as $note) {
+                $this->line($note);
+            }
+        }else{
+            $this->line(sprintf('No "<info>%s </info>" plugin found!', camel_case(strtolower($plugin))));
         }
 
-        foreach ($migrator->getNotes() as $note) {
-            $this->line($note);
-        }
     }
 }

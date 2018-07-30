@@ -57,39 +57,44 @@ class MigrateCommand extends MigrationCommand
 
         $plugin = $this->argument('plugin');
 
-        $configuration = $provider->getForConnection(
-            $plugin,
-            $this->option('connection') ?: null
-        );
-
-        try {
-            $migration = new Migration(
-                $configuration,
-                $this->argument('version')
+        if($this->isPlugin($plugin)){
+            $configuration = $provider->getForConnection(
+                $plugin,
+                $this->option('connection') ?: null
             );
-        } catch (MigrationVersionException $e) {
-            $this->error($e->getMessage());
-        } catch (ExecutedUnavailableMigrationsException $e) {}
 
-        try {
-            $migration->checkIfNotExecutedUnavailableMigrations();
-        } catch (ExecutedUnavailableMigrationsException $e) {
-            $this->handleExecutedUnavailableMigrationsException($e, $configuration);
+            try {
+                $migration = new Migration(
+                    $configuration,
+                    $this->argument('version')
+                );
+            } catch (MigrationVersionException $e) {
+                $this->error($e->getMessage());
+            } catch (ExecutedUnavailableMigrationsException $e) {}
+
+            try {
+                $migration->checkIfNotExecutedUnavailableMigrations();
+            } catch (ExecutedUnavailableMigrationsException $e) {
+                $this->handleExecutedUnavailableMigrationsException($e, $configuration);
+            }
+
+            if ($path = $this->option('write-sql')) {
+                $migrator->migrateToFile($migration, $path);
+            } else {
+                $migrator->migrate(
+                    $migration,
+                    $this->option('dry-run') ? true : false,
+                    $this->option('query-time') ? true : false
+                );
+            }
+
+            foreach ($migrator->getNotes() as $note) {
+                $this->line($note);
+            }
+        }else{
+            $this->line(sprintf('No "<info>%s </info>" plugin found!', camel_case(strtolower($plugin))));
         }
 
-        if ($path = $this->option('write-sql')) {
-            $migrator->migrateToFile($migration, $path);
-        } else {
-            $migrator->migrate(
-                $migration,
-                $this->option('dry-run') ? true : false,
-                $this->option('query-time') ? true : false
-            );
-        }
-
-        foreach ($migrator->getNotes() as $note) {
-            $this->line($note);
-        }
     }
 
     /**

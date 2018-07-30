@@ -55,18 +55,24 @@ class ResetCommand extends MigrationCommand
 
         $plugin = $this->argument('plugin');
 
-        $configuration = $provider->getForConnection(
-            $plugin,
-            $this->option('connection')
-        );
+        if($this->isPlugin($plugin)){
+            $configuration = $provider->getForConnection(
+                $plugin,
+                $this->option('connection')
+            );
 
-        $em = $registry->getManager($this->option('connection'));
+            $em = $registry->getManager($this->option('connection'));
 
-        $this->connection = $configuration->getConnection();
+            $this->connection = $configuration->getConnection();
 
-        $this->safelyDropTables($plugin, $em);
+            $this->safelyDropTables($plugin, $em);
 
-        $this->info('Database was reset');
+            $this->info('Database tables for '.camel_case(strtolower($plugin)).' plugin was reset');
+        }else{
+            $this->line(sprintf('No "<info>%s </info>" plugin found!', camel_case(strtolower($plugin))));
+        }
+
+
     }
 
     /**

@@ -40,14 +40,19 @@ class GenerateCommand extends MigrationCommand
     {
         $plugin = $this->argument('plugin');
 
-        $configuration = $provider->getForConnection($plugin, $this->option('connection'));
+        if($this->isPlugin($plugin)){
+            $configuration = $provider->getForConnection($plugin, $this->option('connection'));
 
-        $filename = $generator->generate(
-            $configuration,
-            $this->option('create'),
-            $this->option('table')
-        );
+            $filename = $generator->generate(
+                $configuration,
+                $this->option('create'),
+                $this->option('table')
+            );
 
-        $this->line(sprintf('<info>Created Migration:</info> %s', $filename));
+            $this->line(sprintf('<info>Created Migration:</info> %s', $filename));
+        }else{
+            $this->line(sprintf('No "<info>%s </info>" plugin found!', camel_case(strtolower($plugin))));
+        }
+
     }
 }
