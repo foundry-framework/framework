@@ -308,4 +308,23 @@ class Configuration extends Base
         return parent::getMigrations();
     }
 
+    /**
+     * Register an array of migrations. Each key of the array is the version and
+     * the value is the migration class name.
+     *
+     *
+     * @param array $migrations
+     *
+     * @return Version[]
+     * @throws MigrationException
+     */
+    public function registerMigrations(array $migrations)
+    {
+        $versions = [];
+        foreach ($migrations as $version => $class) {
+            $versions[] = $this->registerMigration($version, $class);
+        }
+
+        return $versions;
+    }
 }
