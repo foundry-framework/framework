@@ -13,7 +13,7 @@ if (!function_exists('fndry')) {
 
 if (!function_exists('plugin_path')) {
 
-    function plugins_migrations_path($plugin)
+    function plugin_path($plugin)
     {
         return base_path('plugins/foundry/'.camel_case(strtolower($plugin)));
     }
