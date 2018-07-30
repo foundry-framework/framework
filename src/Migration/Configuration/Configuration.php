@@ -109,7 +109,7 @@ class Configuration extends Base
 
         $ret = $this->getConnection()->fetchAll("SELECT " . $this->getQuotedMigrationsColumnName() .
                                                     " FROM " . $this->getMigrationsTableName().
-                                                    " WHERE ".$this->getMigrationsPluginName()." = ". camel_case(strtolower($plugin)));
+                                                    " WHERE ".$this->getMigrationsPluginName()." = \"". camel_case(strtolower($plugin))."\"");
 
         return array_map('current', $ret);
     }
