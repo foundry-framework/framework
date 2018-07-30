@@ -4,7 +4,7 @@ namespace Foundry\Framework\Migrations\Configuration;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Migrations\Configuration\Configuration as MigrationsConfiguration;
+use LaravelDoctrine\Migrations\Configuration\Configuration as Base;
 use Doctrine\DBAL\Migrations\MigrationException;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
@@ -13,7 +13,7 @@ use Foundry\Framework\Migrations\Version;
 use LaravelDoctrine\Migrations\Naming\NamingStrategy;
 
 
-class Configuration extends MigrationsConfiguration
+class Configuration extends Base
 {
     /**
      * @var NamingStrategy
