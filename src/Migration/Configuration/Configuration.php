@@ -299,16 +299,6 @@ class Configuration extends Base
     }
 
     /**
-     * Get the array of registered migration versions.
-     *
-     * @return Version[] $migrations
-     */
-    public function getMigrations()
-    {
-        return parent::getMigrations();
-    }
-
-    /**
      * Register an array of migrations. Each key of the array is the version and
      * the value is the migration class name.
      *
