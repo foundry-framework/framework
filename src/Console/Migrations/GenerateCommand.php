@@ -3,7 +3,8 @@
 namespace Foundry\Framework\Console\Migrations\Console;
 
 use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use LaravelDoctrine\Migrations\Output\MigrationFileGenerator;
+use Foundry\Framework\Migrations\MigrationFileGenerator;
+
 
 /**
  * Class GenerateCommand
@@ -43,7 +44,7 @@ class GenerateCommand extends MigrationCommand
         if($this->isPlugin($plugin)){
             $configuration = $provider->getForConnection($plugin, $this->option('connection'));
 
-            $filename = $generator->generate(
+            $filename = $generator->foundryGenerate(
                 $configuration,
                 $this->option('create'),
                 $this->option('table')

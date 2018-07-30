@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Migrations\Provider\OrmSchemaProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use LaravelDoctrine\Migrations\Output\MigrationFileGenerator;
+use Foundry\Framework\Migrations\MigrationFileGenerator;
 use LaravelDoctrine\Migrations\Output\SqlBuilder;
 
 /**
@@ -87,7 +87,7 @@ class DiffCommand extends MigrationCommand
                 return $this->error('No changes detected in your mapping information.');
             }
 
-            $path = $generator->generate(
+            $path = $generator->foundryGenerate(
                 $configuration,
                 false,
                 false,

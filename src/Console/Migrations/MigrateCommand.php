@@ -2,13 +2,14 @@
 
 namespace Foundry\Framework\Console\Migrations\Console;
 
+use Foundry\Framework\Migrations\Configuration\Configuration;
 use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migrations\Migration;
+use Foundry\Framework\Migrations\Migrator;
 use Illuminate\Console\ConfirmableTrait;
-use LaravelDoctrine\Migrations\Configuration\Configuration;
 use LaravelDoctrine\Migrations\Exceptions\ExecutedUnavailableMigrationsException;
 use LaravelDoctrine\Migrations\Exceptions\MigrationVersionException;
-use LaravelDoctrine\Migrations\Migration;
-use LaravelDoctrine\Migrations\Migrator;
+
 
 /**
  * Class MigrateCommand
@@ -63,17 +64,20 @@ class MigrateCommand extends MigrationCommand
                 $this->option('connection') ?: null
             );
 
+            $migration = null;
+
             try {
                 $migration = new Migration(
                     $configuration,
+                    $plugin,
                     $this->argument('version')
                 );
             } catch (MigrationVersionException $e) {
                 $this->error($e->getMessage());
-            } catch (ExecutedUnavailableMigrationsException $e) {}
+            }
 
             try {
-                $migration->checkIfNotExecutedUnavailableMigrations();
+                $migration->checkIfNotExecutedUnavailableMigrations($plugin);
             } catch (ExecutedUnavailableMigrationsException $e) {
                 $this->handleExecutedUnavailableMigrationsException($e, $configuration);
             }

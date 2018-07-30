@@ -4,8 +4,8 @@ namespace Foundry\Framework\Console\Migrations\Console;
 
 use Doctrine\DBAL\Migrations\MigrationException;
 use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migrations\Migrator;
 use Illuminate\Console\ConfirmableTrait;
-use LaravelDoctrine\Migrations\Migrator;
 
 /**
  * Class ExecuteCommand
@@ -43,7 +43,9 @@ class ExecuteCommand extends MigrationCommand
      * Execute the console command.
      *
      * @param ConfigurationProvider $provider
-     * @param Migrator              $migrator
+     * @param Migrator $migrator
+     * @throws MigrationException
+     * @throws \Exception
      */
     public function handle(ConfigurationProvider $provider, Migrator $migrator)
     {

@@ -3,7 +3,8 @@
 namespace Foundry\Framework\Migrations\Configuration;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use LaravelDoctrine\Migrations\Configuration\Configuration;
+use Doctrine\DBAL\Connection;
+
 
 class ConfigurationProvider
 {
@@ -35,6 +36,9 @@ class ConfigurationProvider
      */
     public function getForConnection($plugin, $name = null)
     {
+        /**
+         * @var $connection Connection
+         */
         $connection = $this->registry->getConnection($name);
 
         return $this->factory->make($connection, $plugin, $name);

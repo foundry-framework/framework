@@ -7,7 +7,6 @@ use Doctrine\DBAL\Migrations\MigrationException;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Container\Container;
-use LaravelDoctrine\Migrations\Configuration\Configuration;
 use LaravelDoctrine\Migrations\Naming\DefaultNamingStrategy;
 
 /**
@@ -80,6 +79,7 @@ class ConfigurationFactory
             mkdir($directory, 0777, true);
 
         $configuration->setMigrationsDirectory($directory);
+        $configuration->setPluginName(camel_case(strtolower($plugin)));
         $configuration->registerMigrationsFromDirectory($directory);
 
         return $configuration;

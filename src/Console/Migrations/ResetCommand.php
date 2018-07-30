@@ -108,6 +108,7 @@ class ResetCommand extends MigrationCommand
 
     /**
      * @param string $table
+     * @throws \Doctrine\DBAL\DBALException
      */
     private function safelyDropTable($table)
     {
