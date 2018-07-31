@@ -55,8 +55,6 @@ class Migration
      */
     public function __construct(Configuration $configuration, $plugin, $version = 'latest')
     {
-        parent::__construct($configuration);
-
         $this->configuration        = $configuration;
         $this->outputWriter         = $configuration->getOutputWriter();
         $this->plugin               = $plugin;

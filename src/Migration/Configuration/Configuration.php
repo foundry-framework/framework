@@ -637,9 +637,9 @@ class Configuration
 
         $version = (string) $version;
         $class   = (string) $class;
-//        if (isset($this->migrations[$version])) {
-//            throw MigrationException::duplicateMigrationVersion($version, get_class($this->migrations[$version]));
-//        }
+        if (isset($this->migrations[$version])) {
+            throw MigrationException::duplicateMigrationVersion($version, get_class($this->migrations[$version]));
+        }
         $version                                  = new Version($this, $version, $class);
         $this->migrations[$version->getVersion()] = $version;
         ksort($this->migrations, SORT_STRING);

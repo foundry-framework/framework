@@ -1,19 +1,33 @@
 <?php
 
-namespace Foundry\Framework\Migration;
+namespace Foundry\Framework\Migration\Output;
+
 
 use Foundry\Framework\Migration\Configuration\Configuration;
 use LaravelDoctrine\Migrations\Output\MigrationFileGenerator as Base;
 
-/**
- * Class MigrationFileGenerator
- *
- * @package Foundry\Framework\Migrations
- *
- * @author Medard Ilunga
- */
 class MigrationFileGenerator extends Base
 {
+    /**
+     * @param bool|string $create
+     * @param bool|string $update
+     *
+     * @return string
+     */
+    protected function getStub($create, $update)
+    {
+        $stub = 'blank';
+        if ($create) {
+            $stub = 'create';
+        }
+
+        if ($update) {
+            $stub = 'update';
+        }
+
+        return __DIR__ . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . $stub . '.stub';
+    }
+
     /**
      * @param Configuration $configuration
      * @param bool          $create

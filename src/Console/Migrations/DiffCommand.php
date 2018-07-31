@@ -6,7 +6,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Migrations\Provider\OrmSchemaProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
-use Foundry\Framework\Migration\MigrationFileGenerator;
+use Foundry\Framework\Migration\Output\MigrationFileGenerator;
 use Foundry\Framework\Migration\Output\SqlBuilder;
 
 
