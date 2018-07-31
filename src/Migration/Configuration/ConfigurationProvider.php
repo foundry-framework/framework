@@ -5,7 +5,13 @@ namespace Foundry\Framework\Migration\Configuration;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
 
-
+/**
+ * Class ConfigurationProvider
+ *
+ * @package Foundry\Framework\Migration\Configuration
+ *
+ * @author Medard Ilunga
+ */
 class ConfigurationProvider
 {
     /**

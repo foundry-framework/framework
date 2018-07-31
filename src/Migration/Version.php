@@ -10,13 +10,14 @@ use Doctrine\DBAL\Migrations\Provider\LazySchemaDiffProvider;
 use Doctrine\DBAL\Migrations\Provider\SchemaDiffProvider;
 use Doctrine\DBAL\Migrations\Provider\SchemaDiffProviderInterface;
 use Doctrine\DBAL\Migrations\SkipMigrationException;
-use Doctrine\Migrations\AbstractMigration;
 use Foundry\Framework\Migration\Configuration\Configuration;
 use Doctrine\DBAL\Types\Type;
 use Foundry\Framework\Migration\Event\MigrationsVersionEventArgs;
 
 /**
  * Class Version
+ * Had to override Doctrine Version due to private properties
+ * not accessible in child class. Perhaps should do a PR to Doctrine
  *
  * @package Foundry\Framework\Migrations
  *

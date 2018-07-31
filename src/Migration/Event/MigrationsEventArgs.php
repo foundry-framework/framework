@@ -6,6 +6,15 @@ use Doctrine\Common\EventArgs;
 use Foundry\Framework\Migration\Configuration\Configuration;
 
 
+/**
+ * Class MigrationsEventArgs
+ * Had to override Doctrine configuration due to private properties
+ * not accessible in child class. Perhaps should do a PR to Doctrine
+ *
+ * @package Foundry\Framework\Migration\Event
+ *
+ * @author Medard Ilunga as per Doctrine
+ */
 class MigrationsEventArgs extends EventArgs
 {
     /**

@@ -5,6 +5,15 @@ namespace Foundry\Framework\Migration\Event;
 use Foundry\Framework\Migration\Configuration\Configuration;
 use Foundry\Framework\Migration\Version;
 
+/**
+ * Class MigrationsVersionEventArgs
+ * Had to override Doctrine configuration due to private properties
+ * not accessible in child class. Perhaps should do a PR to Doctrine
+ *
+ * @package Foundry\Framework\Migration\Event
+ *
+ * @author Medard Ilunga as per Doctrine
+ */
 class MigrationsVersionEventArgs extends MigrationsEventArgs
 {
     /**

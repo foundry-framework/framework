@@ -19,6 +19,15 @@ use Doctrine\DBAL\Migrations\QueryWriter;
 use Doctrine\DBAL\Migrations\Finder\MigrationFinderInterface;
 use Doctrine\DBAL\Migrations\Finder\RecursiveRegexFinder;
 
+/**
+ * Class Configuration
+ * Had to override Doctrine configuration due to private properties
+ * not accessible in child class. Perhaps should do a PR to Doctrine
+ *
+ * @package Foundry\Framework\Migration\Configuration
+ *
+ * @author Medard Ilunga
+ */
 class Configuration
 {
     /**

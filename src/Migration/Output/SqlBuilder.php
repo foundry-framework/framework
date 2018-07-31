@@ -6,6 +6,13 @@ use Doctrine\DBAL\Schema\Schema;
 use Foundry\Framework\Migration\Configuration\Configuration;
 
 
+/**
+ * Class SqlBuilder
+ *
+ * @package Foundry\Framework\Migration\Output
+ *
+ * @author Medard Ilunga
+ */
 class SqlBuilder
 {
     /**
