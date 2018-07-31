@@ -1,6 +1,6 @@
 <?php
 
-namespace Foundry\Framework\Migrations\Configuration;
+namespace Foundry\Framework\Migration\Configuration;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\MigrationException;

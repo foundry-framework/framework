@@ -2,8 +2,8 @@
 
 namespace Foundry\Framework\Console\Migrations\Console;
 
-use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use Foundry\Framework\Migrations\MigrationFileGenerator;
+use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migration\MigrationFileGenerator;
 
 
 /**

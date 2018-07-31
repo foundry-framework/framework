@@ -2,7 +2,7 @@
 
 namespace Foundry\Framework\Console\Migrations\Console;
 
-use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
 
 /**
  * Class LatestCommand

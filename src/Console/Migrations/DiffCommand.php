@@ -5,9 +5,10 @@ namespace Foundry\Framework\Console\Migrations\Console;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Migrations\Provider\OrmSchemaProvider;
 use Doctrine\ORM\EntityManagerInterface;
-use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use Foundry\Framework\Migrations\MigrationFileGenerator;
-use LaravelDoctrine\Migrations\Output\SqlBuilder;
+use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migration\MigrationFileGenerator;
+use Foundry\Framework\Migration\Output\SqlBuilder;
+
 
 /**
  * Class DiffCommand

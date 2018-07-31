@@ -1,8 +1,7 @@
 <?php
 
-namespace Foundry\Framework\Migrations;
+namespace Foundry\Framework\Migration;
 
-use Doctrine\DBAL\Migrations\Version;
 
 /**
  * Class Migrator

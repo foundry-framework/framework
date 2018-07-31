@@ -5,7 +5,7 @@ namespace Foundry\Framework\Console\Migrations\Console;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
 use Exception;
-use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
 use Illuminate\Console\ConfirmableTrait;
 
 /**

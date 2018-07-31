@@ -3,8 +3,8 @@
 namespace Foundry\Framework\Console\Migrations\Console;
 
 use Doctrine\DBAL\Migrations\MigrationException;
-use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use Foundry\Framework\Migrations\Migrator;
+use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migration\Migrator;
 use Illuminate\Console\ConfirmableTrait;
 
 /**

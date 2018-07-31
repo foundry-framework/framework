@@ -1,6 +1,6 @@
 <?php
 
-namespace Foundry\Framework\Migrations\Configuration;
+namespace Foundry\Framework\Migration\Configuration;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;

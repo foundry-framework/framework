@@ -1,8 +1,8 @@
 <?php
 
-namespace Foundry\Framework\Migrations;
+namespace Foundry\Framework\Migration;
 
-use Foundry\Framework\Migrations\Configuration\Configuration;
+use Foundry\Framework\Migration\Configuration\Configuration;
 use LaravelDoctrine\Migrations\Output\MigrationFileGenerator as Base;
 
 /**

@@ -2,8 +2,9 @@
 
 namespace Foundry\Framework\Console\Migrations\Console;
 
-use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use LaravelDoctrine\Migrations\Configuration\Configuration;
+use Foundry\Framework\Migration\Configuration\Configuration;
+use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
+
 
 /**
  * Class StatusCommand

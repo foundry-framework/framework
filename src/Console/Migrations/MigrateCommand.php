@@ -2,10 +2,10 @@
 
 namespace Foundry\Framework\Console\Migrations\Console;
 
-use Foundry\Framework\Migrations\Configuration\Configuration;
-use Foundry\Framework\Migrations\Configuration\ConfigurationProvider;
-use Foundry\Framework\Migrations\Migration;
-use Foundry\Framework\Migrations\Migrator;
+use Foundry\Framework\Migration\Configuration\Configuration;
+use Foundry\Framework\Migration\Configuration\ConfigurationProvider;
+use Foundry\Framework\Migration\Migration;
+use Foundry\Framework\Migration\Migrator;
 use Illuminate\Console\ConfirmableTrait;
 use LaravelDoctrine\Migrations\Exceptions\ExecutedUnavailableMigrationsException;
 use LaravelDoctrine\Migrations\Exceptions\MigrationVersionException;

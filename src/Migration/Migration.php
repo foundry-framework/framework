@@ -1,15 +1,15 @@
 <?php
 
-namespace Foundry\Framework\Migrations;
+namespace Foundry\Framework\Migration;
 
 use Doctrine\DBAL\Migrations\Events;
-use Doctrine\DBAL\Migrations\Migration as DBALMigration;
 use Doctrine\DBAL\Migrations\MigrationException;
 use Doctrine\DBAL\Migrations\OutputWriter;
-use Foundry\Framework\Migrations\Configuration\Configuration;
+use Foundry\Framework\Migration\Configuration\Configuration;
+use Foundry\Framework\Migration\Event\MigrationsEventArgs;
 use LaravelDoctrine\Migrations\Exceptions\ExecutedUnavailableMigrationsException;
 use LaravelDoctrine\Migrations\Exceptions\MigrationVersionException;
-use Doctrine\DBAL\Migrations\Event\MigrationsEventArgs;
+
 use const COUNT_RECURSIVE;
 
 /**
@@ -18,7 +18,7 @@ use const COUNT_RECURSIVE;
  *
  * @author Medard Ilunga
  */
-class Migration extends DBALMigration
+class Migration
 {
     /**
      * @var string|null
